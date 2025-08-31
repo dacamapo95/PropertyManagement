@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using PropertyManagement.Infrastructure.Authentication;
+using PropertyManagement.Infrastructure.Database.Interfaces;
 
 namespace PropertyManagement.Infrastructure.Database;
 

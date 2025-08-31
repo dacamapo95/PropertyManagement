@@ -1,6 +1,6 @@
 namespace PropertyManagement.API.Extensions;
 
-using PropertyManagement.Infrastructure.Database;
+using PropertyManagement.Infrastructure.Database.Interfaces;
 
 public static class DatabaseSeedingExtensions
 {

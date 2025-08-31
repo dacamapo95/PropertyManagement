@@ -1,7 +1,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace PropertyManagement.Infrastructure.Database;
+namespace PropertyManagement.Infrastructure.Database.Interfaces;
 
 public interface IDatabaseInitializer
 {

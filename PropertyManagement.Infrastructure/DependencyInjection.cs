@@ -9,6 +9,7 @@ using PropertyManagement.Infrastructure.Authentication.Services;
 using PropertyManagement.Infrastructure.Authentication.Settings;
 using PropertyManagement.Infrastructure.Database;
 using PropertyManagement.Infrastructure.Database.Interceptors;
+using PropertyManagement.Infrastructure.Database.Interfaces;
 namespace PropertyManagement.Infrastructure;
 
 public static class DependencyInjection
