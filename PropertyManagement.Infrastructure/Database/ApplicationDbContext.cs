@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using PropertyManagement.Application.Core.Abstractions;
 using PropertyManagement.Infrastructure;
 using PropertyManagement.Infrastructure.Authentication;
-using PropertyManagement.Domain.Geography;
+using PropertyManagement.Domain.Countries;
 
 public class ApplicationDbContext
     : IdentityDbContext<User, Role, Guid, IdentityUserClaim<Guid>, UserRole, UserLogin, IdentityRoleClaim<Guid>, UserToken>,

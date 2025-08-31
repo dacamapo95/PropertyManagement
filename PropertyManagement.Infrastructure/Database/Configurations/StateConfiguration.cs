@@ -1,8 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using PropertyManagement.Domain.Geography;
+using PropertyManagement.Domain.Countries;
 
-namespace PropertyManagement.Infrastructure.Database.Configurations.Geography;
+namespace PropertyManagement.Infrastructure.Database.Configurations;
 
 public sealed class StateConfiguration : IEntityTypeConfiguration<State>
 {

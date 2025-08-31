@@ -10,6 +10,8 @@ using PropertyManagement.Infrastructure.Authentication.Settings;
 using PropertyManagement.Infrastructure.Database;
 using PropertyManagement.Infrastructure.Database.Interceptors;
 using PropertyManagement.Infrastructure.Database.Interfaces;
+using PropertyManagement.Domain.Countries;
+using PropertyManagement.Infrastructure.Database.Repositories;
 namespace PropertyManagement.Infrastructure;
 
 public static class DependencyInjection
@@ -42,6 +44,11 @@ public static class DependencyInjection
 
         // Database initializer
         services.AddScoped<IDatabaseInitializer, DatabaseInitializer>();
+
+        // Geography repositories
+        services.AddScoped<ICountryReadRepository, CountryReadRepository>();
+        services.AddScoped<IStateReadRepository, StateReadRepository>();
+        services.AddScoped<ICityReadRepository, CityReadRepository>();
 
         return services;
     }

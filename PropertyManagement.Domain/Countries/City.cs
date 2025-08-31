@@ -1,6 +1,6 @@
 using PropertyManagement.Shared.Primitives;
 
-namespace PropertyManagement.Domain.Geography;
+namespace PropertyManagement.Domain.Countries;
 
 public sealed class City : MasterEntity<Guid>
 {

@@ -1,0 +1,20 @@
+using PropertyManagement.Application.Core.Abstractions;
+using PropertyManagement.Domain.Countries;
+using PropertyManagement.Shared.Results;
+
+namespace PropertyManagement.Application.Features.Countries.Get;
+
+public sealed class GetCountriesQueryHandler(ICountryReadRepository repo) : IQueryHandler<GetCountriesQuery, IReadOnlyList<CountryResponse>>
+{
+    private readonly ICountryReadRepository _repo = repo;
+
+    public async Task<Result<IReadOnlyList<CountryResponse>>> Handle(GetCountriesQuery request, CancellationToken cancellationToken)
+    {
+        _repo.DisableTracking();
+        var countries = await _repo.GetAllAsync(cancellationToken);
+        return countries
+            .Select(c => new CountryResponse(c.Id, c.Name, c.Iso2, c.Iso3, c.PhoneCode, c.CurrencyCode))
+            .OrderBy(c => c.Name)
+            .ToList();
+    }
+}

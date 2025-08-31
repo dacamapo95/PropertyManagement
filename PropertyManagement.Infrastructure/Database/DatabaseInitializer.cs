@@ -3,8 +3,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using PropertyManagement.Infrastructure.Authentication;
 using PropertyManagement.Infrastructure.Database.Interfaces;
-using PropertyManagement.Domain.Geography;
 using System.Text.Json;
+using PropertyManagement.Domain.Countries;
 
 namespace PropertyManagement.Infrastructure.Database;
 
