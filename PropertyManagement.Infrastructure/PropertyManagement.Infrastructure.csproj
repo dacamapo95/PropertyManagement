@@ -9,4 +9,13 @@
   <ItemGroup>
     <ProjectReference Include="..\PropertyManagement.Application\PropertyManagement.Application.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Database\SeedData\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Database\SeedData\cities.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <EmbeddedResource Include="Database\SeedData\cities.json" />
+  </ItemGroup>
 </Project>

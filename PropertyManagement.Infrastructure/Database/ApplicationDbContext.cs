@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using PropertyManagement.Application.Core.Abstractions;
 using PropertyManagement.Infrastructure;
 using PropertyManagement.Infrastructure.Authentication;
+using PropertyManagement.Domain.Geography;
 
 public class ApplicationDbContext
     : IdentityDbContext<User, Role, Guid, IdentityUserClaim<Guid>, UserRole, UserLogin, IdentityRoleClaim<Guid>, UserToken>,
@@ -14,6 +15,10 @@ public class ApplicationDbContext
         DbContextOptions<ApplicationDbContext> options) : base(options)
     {
     }
+
+    public DbSet<Country> Countries => Set<Country>();
+    public DbSet<State> States => Set<State>();
+    public DbSet<City> Cities => Set<City>();
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {

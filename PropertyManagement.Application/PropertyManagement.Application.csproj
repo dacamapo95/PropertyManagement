@@ -6,4 +6,7 @@
   <ItemGroup>
     <ProjectReference Include="..\PropertyManagement.Domain\PropertyManagement.Domain.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Features\" />
+  </ItemGroup>
 </Project>
