@@ -25,6 +25,7 @@ public class ApplicationDbContext
         builder.HasDefaultSchema("PTY");
         base.OnModelCreating(builder);
         builder.ApplyConfigurationsFromAssembly(AssemblyReference.Assembly);
+        UsersConfiguration.ConfigureUsersContraints(builder);
     }
 
     public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)

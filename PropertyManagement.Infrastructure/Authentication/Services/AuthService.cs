@@ -56,8 +56,8 @@ public sealed class AuthService(
         user.SetRefreshToken(refreshToken, refreshExp);
         await _db.SaveChangesAsync(ct);
 
-        var response = new AuthResponse(user.Id, user.Email!, user.UserName, accessToken, accessExp, refreshToken, refreshExp);
-        return Result.Success(response);
+        return new AuthResponse(user.Id, user.Email!, user.UserName, accessToken, accessExp, refreshToken, refreshExp);
+       
     }
 
     public async Task<Result<AuthResponse>> RefreshAsync(string refreshToken, CancellationToken ct = default)
@@ -69,9 +69,10 @@ public sealed class AuthService(
 
         var user = await _userManager.Users.Include(u => u.Tokens)
             .FirstOrDefaultAsync(u => u.Tokens.Any(t => t.Token == refreshToken), ct);
+
         if (user is null || !user.IsValidRefreshToken(refreshToken))
         {
-            return Result.Fail<AuthResponse>(Error.Unauthorized("Invalid refresh token"));
+            return Error.Unauthorized("Invalid refresh token");
         }
 
         var (accessToken, accessExp) = _tokenService.CreateAccessToken(user, _jwt);

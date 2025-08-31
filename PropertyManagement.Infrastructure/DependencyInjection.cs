@@ -7,6 +7,7 @@ using PropertyManagement.Infrastructure.Authentication;
 using PropertyManagement.Infrastructure.Authentication.Interfaces;
 using PropertyManagement.Infrastructure.Authentication.Services;
 using PropertyManagement.Infrastructure.Authentication.Settings;
+using PropertyManagement.Infrastructure.Database;
 using PropertyManagement.Infrastructure.Database.Interceptors;
 namespace PropertyManagement.Infrastructure;
 
@@ -37,6 +38,9 @@ public static class DependencyInjection
 
         services.AddSingleton<ITokenService, TokenService>();
         services.AddScoped<IAuthService, AuthService>();
+
+        // Database initializer
+        services.AddScoped<IDatabaseInitializer, DatabaseInitializer>();
 
         return services;
     }

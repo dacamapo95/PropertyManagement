@@ -1,5 +1,7 @@
 namespace PropertyManagement.API.Extensions;
 
+using PropertyManagement.Infrastructure.Database;
+
 public static class DatabaseSeedingExtensions
 {
     public static async Task SeedDatabaseAsync(this WebApplication app)
@@ -10,9 +12,8 @@ public static class DatabaseSeedingExtensions
         try
         {
             logger.LogInformation("Beginning database seeding...");
-            //TODO: Implement actual database seeding logic here
-            await Task.Delay(1000); 
-
+            var initializer = scope.ServiceProvider.GetRequiredService<IDatabaseInitializer>();
+            await initializer.InitializeAsync();
             logger.LogInformation("Database seeding completed successfully");
         }
         catch (Exception ex)

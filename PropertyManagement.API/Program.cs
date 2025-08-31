@@ -6,4 +6,6 @@ var app = builder.ConfigureServices();
 
 app.UsePipeline();
 
+await app.SeedDatabaseAsync();
+
 app.Run();
