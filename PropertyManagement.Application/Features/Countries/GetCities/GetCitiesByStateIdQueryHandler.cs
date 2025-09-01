@@ -4,16 +4,16 @@ using PropertyManagement.Shared.Results;
 
 namespace PropertyManagement.Application.Features.Countries.GetCities;
 
-public sealed class GetCitiesByStateIdQueryHandler(ICityReadRepository repo)
+public sealed class GetCitiesByStateIdQueryHandler(ICityRepository repo)
     : IQueryHandler<GetCitiesByStateIdQuery, IReadOnlyList<CityResponse>>
 {
-    private readonly ICityReadRepository _repo = repo;
+    private readonly ICityRepository _repo = repo;
 
     public async Task<Result<IReadOnlyList<CityResponse>>> Handle(GetCitiesByStateIdQuery request, CancellationToken cancellationToken)
     {
         _repo.DisableTracking();
 
-        var cities = await _repo.GetAsync(c => c.StateId == request.StateId, cancellationToken);
+        var cities = await _repo.GetByStateIdAsync(request.StateId, cancellationToken);
 
         return cities.Select(c => new CityResponse(c.Id, c.Name, c.CountryId, c.StateId))
                          .OrderBy(c => c.Name)

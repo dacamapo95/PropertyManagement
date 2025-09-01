@@ -2,6 +2,6 @@ using PropertyManagement.Domain.Interfaces;
 
 namespace PropertyManagement.Domain.Countries;
 
-public interface ICountryReadRepository : IReadRepository<Country, Guid>
+public interface ICountryRepository : IReadRepository<Country, Guid>
 {
 }

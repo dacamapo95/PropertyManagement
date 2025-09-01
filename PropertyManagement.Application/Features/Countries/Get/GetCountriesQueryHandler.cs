@@ -4,9 +4,9 @@ using PropertyManagement.Shared.Results;
 
 namespace PropertyManagement.Application.Features.Countries.Get;
 
-public sealed class GetCountriesQueryHandler(ICountryReadRepository repo) : IQueryHandler<GetCountriesQuery, IReadOnlyList<CountryResponse>>
+public sealed class GetCountriesQueryHandler(ICountryRepository repo) : IQueryHandler<GetCountriesQuery, IReadOnlyList<CountryResponse>>
 {
-    private readonly ICountryReadRepository _repo = repo;
+    private readonly ICountryRepository _repo = repo;
 
     public async Task<Result<IReadOnlyList<CountryResponse>>> Handle(GetCountriesQuery request, CancellationToken cancellationToken)
     {

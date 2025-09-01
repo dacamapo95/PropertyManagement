@@ -12,7 +12,7 @@ public sealed class Countries : ICarterModule
     {
         var group =  app.MapGroup("/api/countries").WithTags("Countries");
 
-        group.MapGet("", async (string? search, ISender sender) =>
+        group.MapGet("", async (ISender sender) =>
         {
             var result = await sender.Send(new GetCountriesQuery());
             return Results.Ok(result.Value);
