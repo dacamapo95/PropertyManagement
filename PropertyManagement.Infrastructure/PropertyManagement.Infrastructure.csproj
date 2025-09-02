@@ -10,6 +10,7 @@
     <ProjectReference Include="..\PropertyManagement.Application\PropertyManagement.Application.csproj" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Database\Migrations\" />
     <Folder Include="Database\SeedData\" />
   </ItemGroup>
   <ItemGroup>

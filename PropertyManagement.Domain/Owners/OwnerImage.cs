@@ -1,7 +1,7 @@
 ﻿using PropertyManagement.Shared.Primitives;
 
 namespace PropertyManagement.Domain.Owners;
-public class OwnerImage : AuditableEntity<Guid>
+public class OwnerImage 
 {
     public Guid OwnerId { get; set; }
     public Owner Owner { get; set; } = default!;

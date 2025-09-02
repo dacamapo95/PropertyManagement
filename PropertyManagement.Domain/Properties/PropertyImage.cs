@@ -5,7 +5,7 @@ using File = PropertyManagement.Domain.Files.File;
 
 namespace PropertyManagement.Domain.Properties;
 
-public sealed class PropertyImage : AuditableEntity<Guid>
+public sealed class PropertyImage 
 {
     public Guid PropertyId { get; set; }
     public Property Property { get; set; } = default!;
