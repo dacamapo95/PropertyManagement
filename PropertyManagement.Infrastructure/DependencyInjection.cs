@@ -17,6 +17,7 @@ using PropertyManagement.Infrastructure.Database.Repositories;
 using Microsoft.Extensions.Caching.Memory;
 using PropertyManagement.Domain.Owners;
 using PropertyManagement.Domain.Properties;
+using PropertyManagement.Domain.Files;
 
 namespace PropertyManagement.Infrastructure;
 
@@ -73,6 +74,7 @@ public static class DependencyInjection
         // New repositories
         services.AddScoped<IIdentificationTypeRepository, IdentificationTypeRepository>();
         services.AddScoped<IPropertyStatusRepository, PropertyStatusRepository>();
+        services.AddScoped<IFileRepository, FileRepository>();
 
         return services;
     }
