@@ -15,6 +15,9 @@ using PropertyManagement.Infrastructure.Database.Interfaces;
 using PropertyManagement.Domain.Countries;
 using PropertyManagement.Infrastructure.Database.Repositories;
 using Microsoft.Extensions.Caching.Memory;
+using PropertyManagement.Domain.Owners;
+using PropertyManagement.Domain.Properties;
+
 namespace PropertyManagement.Infrastructure;
 
 public static class DependencyInjection
@@ -66,6 +69,10 @@ public static class DependencyInjection
                 sp.GetRequiredService<CityRepository>(),
                 sp.GetRequiredService<IMemoryCache>(),
                 sp.GetRequiredService<IOptions<CacheOptions>>()));
+
+        // New repositories
+        services.AddScoped<IIdentificationTypeRepository, IdentificationTypeRepository>();
+        services.AddScoped<IPropertyStatusRepository, PropertyStatusRepository>();
 
         return services;
     }

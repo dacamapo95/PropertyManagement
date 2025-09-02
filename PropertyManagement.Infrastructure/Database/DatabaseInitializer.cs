@@ -5,6 +5,8 @@ using PropertyManagement.Infrastructure.Authentication;
 using PropertyManagement.Infrastructure.Database.Interfaces;
 using System.Text.Json;
 using PropertyManagement.Domain.Countries;
+using PropertyManagement.Domain.Properties;
+using PropertyManagement.Domain.Owners;
 
 namespace PropertyManagement.Infrastructure.Database;
 
@@ -19,6 +21,7 @@ public sealed class DatabaseInitializer(UserManager<User> userManager, RoleManag
     {
         await EnsureDatabaseCreatedAsync(cancellationToken);
         await SeedDefaultUserAsync(cancellationToken);
+        await SeedMasterDataAsync(cancellationToken);
         await SeedUsGeographyAsync(cancellationToken);
     }
 
@@ -63,6 +66,48 @@ public sealed class DatabaseInitializer(UserManager<User> userManager, RoleManag
         }
 
         _logger.LogInformation("Default user {Email} created.", email);
+    }
+
+    private async Task SeedMasterDataAsync(CancellationToken cancellationToken)
+    {
+        await SeedPropertyStatusesAsync(cancellationToken);
+        await SeedIdentificationTypesAsync(cancellationToken);
+    }
+
+    private async Task SeedPropertyStatusesAsync(CancellationToken cancellationToken)
+    {
+        var statuses = Enum.GetValues<PropertyStatusEnum>()
+            .Select(e => new PropertyStatus { Id = (int)e, Name = e.ToString() })
+            .ToList();
+
+        foreach (var status in statuses)
+        {
+            var exists = await _db.PropertyStatuses.AnyAsync(x => x.Id == status.Id, cancellationToken);
+            if (!exists)
+            {
+                _db.PropertyStatuses.Add(status);
+            }
+        }
+
+        await _db.SaveChangesAsync(cancellationToken);
+    }
+
+    private async Task SeedIdentificationTypesAsync(CancellationToken cancellationToken)
+    {
+        var types = Enum.GetValues<IdentificationTypeEnum>()
+            .Select(e => new IdentificationType { Id = (int)e, Name = e.ToString() })
+            .ToList();
+
+        foreach (var t in types)
+        {
+            var exists = await _db.IdentificationTypes.AnyAsync(x => x.Id == t.Id, cancellationToken);
+            if (!exists)
+            {
+                _db.IdentificationTypes.Add(t);
+            }
+        }
+
+        await _db.SaveChangesAsync(cancellationToken);
     }
 
     private async Task SeedUsGeographyAsync(CancellationToken cancellationToken)
