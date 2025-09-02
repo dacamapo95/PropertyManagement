@@ -15,8 +15,13 @@ public sealed class GetCitiesByStateIdQueryHandler(ICityRepository repo)
 
         var cities = await _repo.GetByStateIdAsync(request.StateId, cancellationToken);
 
-        return cities.Select(c => new CityResponse(c.Id, c.Name, c.CountryId, c.StateId))
+        var list = cities.Select(c => new CityResponse(c.Id, c.Name, c.CountryId, c.StateId))
                          .OrderBy(c => c.Name)
                          .ToList();
+
+        if (list.Count == 0)
+            return CountryErrors.CitiesNotFound(request.StateId);
+
+        return list;
     }
 }
