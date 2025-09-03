@@ -23,4 +23,53 @@ public sealed class PropertyRepository(ApplicationDbContext context)
     {
         return await Find(p => p.CodeInternal == codeInternal, cancellationToken);
     }
+
+    public async Task<(IReadOnlyList<Property> Items, int TotalCount)> SearchAsync(
+        int pageNumber,
+        int pageSize,
+        string? search,
+        int? statusId,
+        Guid? cityId,
+        string? orderBy,
+        bool desc,
+        CancellationToken cancellationToken = default)
+    {
+        var query = Query
+            .Include(p => p.Status)
+            .Include(p => p.City)
+            .Include(p => p.Owner)
+            .AsQueryable();
+
+        if (!string.IsNullOrWhiteSpace(search))
+        {
+            var term = search.Trim();
+            query = query.Where(p => p.Name.Contains(term) || p.Address.Contains(term));
+        }
+
+        if (statusId.HasValue)
+            query = query.Where(p => p.StatusId == statusId.Value);
+
+        if (cityId.HasValue)
+            query = query.Where(p => p.CityId == cityId.Value);
+
+
+        query = orderBy?.ToLowerInvariant() switch
+        {
+            "name" => desc ? query.OrderByDescending(p => p.Name) : query.OrderBy(p => p.Name),
+            "price" => desc ? query.OrderByDescending(p => p.Price) : query.OrderBy(p => p.Price),
+            "year" => desc ? query.OrderByDescending(p => p.Year) : query.OrderBy(p => p.Year),
+            "codeinternal" => desc ? query.OrderByDescending(p => p.CodeInternal) : query.OrderBy(p => p.CodeInternal),
+            "created" => desc ? query.OrderByDescending(p => p.CreatedAtUtc) : query.OrderBy(p => p.CreatedAtUtc),
+            _ => query.OrderBy(p => p.Name)
+        };
+
+        var total = await query.CountAsync(cancellationToken);
+
+        var items = await query
+            .Skip((pageNumber - 1) * pageSize)
+            .Take(pageSize)
+            .ToListAsync(cancellationToken);
+
+        return (items, total);
+    }
 }
