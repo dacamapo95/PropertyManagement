@@ -14,12 +14,10 @@ public sealed class Property : AuditableEntity<Guid>
     public int Year { get; set; }
     public int StatusId { get; private set; } = (int)PropertyStatusEnum.Draft;
     public PropertyStatus Status { get; set; } = default!;
-    public Guid CountryId { get; set; }
-    public Country Country { get; set; } = default!;
-    public Guid StateId { get; set; }
-    public State State { get; set; } = default!;
+
     public Guid CityId { get; set; }
     public City City { get; set; } = default!;
+
     public Guid OwnerId { get; set; }
     public Owner Owner { get; set; } = default!;
 

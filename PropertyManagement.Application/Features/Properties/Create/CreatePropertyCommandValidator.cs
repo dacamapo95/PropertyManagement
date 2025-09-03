@@ -30,12 +30,6 @@ public sealed class CreatePropertyCommandValidator : AbstractValidator<CreatePro
         RuleFor(x => x.StatusId)
             .GreaterThan(0).WithMessage("Status is invalid.");
 
-        RuleFor(x => x.CountryId)
-            .NotEmpty().WithMessage("Country is required.");
-
-        RuleFor(x => x.StateId)
-            .NotEmpty().WithMessage("State is required.");
-
         RuleFor(x => x.CityId)
             .NotEmpty().WithMessage("City is required.");
 

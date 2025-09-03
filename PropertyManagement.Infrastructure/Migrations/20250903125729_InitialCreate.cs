@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace PropertyManagement.Infrastructure.Database.Migrations
+namespace PropertyManagement.Infrastructure.Migrations
 {
     /// <inheritdoc />
     public partial class InitialCreate : Migration
@@ -22,13 +22,13 @@ namespace PropertyManagement.Infrastructure.Database.Migrations
                 schema: "PTY",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "TEXT", nullable: false),
-                    Iso2 = table.Column<string>(type: "TEXT", nullable: false),
-                    Iso3 = table.Column<string>(type: "TEXT", nullable: false),
-                    IsoNumeric = table.Column<int>(type: "INTEGER", nullable: true),
-                    PhoneCode = table.Column<string>(type: "TEXT", nullable: true),
-                    CurrencyCode = table.Column<string>(type: "TEXT", maxLength: 3, nullable: true),
-                    Name = table.Column<string>(type: "TEXT", maxLength: 200, nullable: false)
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Iso2 = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Iso3 = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    IsoNumeric = table.Column<int>(type: "int", nullable: true),
+                    PhoneCode = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    CurrencyCode = table.Column<string>(type: "nvarchar(3)", maxLength: 3, nullable: true),
+                    Name = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -40,18 +40,18 @@ namespace PropertyManagement.Infrastructure.Database.Migrations
                 schema: "PTY",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "TEXT", nullable: false),
-                    Name = table.Column<string>(type: "TEXT", maxLength: 200, nullable: false),
-                    OriginalName = table.Column<string>(type: "TEXT", maxLength: 200, nullable: false),
-                    MimeType = table.Column<string>(type: "TEXT", maxLength: 100, nullable: false),
-                    Extension = table.Column<string>(type: "TEXT", maxLength: 10, nullable: false),
-                    Size = table.Column<long>(type: "INTEGER", nullable: false),
-                    Url = table.Column<string>(type: "TEXT", maxLength: 1024, nullable: true),
-                    Content = table.Column<byte[]>(type: "BLOB", nullable: true),
-                    CreatedAtUtc = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    CreatedBy = table.Column<string>(type: "TEXT", nullable: true),
-                    LastModifiedAtUtc = table.Column<DateTime>(type: "TEXT", nullable: true),
-                    LastModifiedBy = table.Column<string>(type: "TEXT", nullable: true)
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
+                    OriginalName = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
+                    MimeType = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    Extension = table.Column<string>(type: "nvarchar(10)", maxLength: 10, nullable: false),
+                    Size = table.Column<long>(type: "bigint", nullable: false),
+                    Url = table.Column<string>(type: "nvarchar(1024)", maxLength: 1024, nullable: true),
+                    Content = table.Column<byte[]>(type: "varbinary(max)", nullable: true),
+                    CreatedAtUtc = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    LastModifiedAtUtc = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    LastModifiedBy = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -63,9 +63,9 @@ namespace PropertyManagement.Infrastructure.Database.Migrations
                 schema: "PTY",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    Name = table.Column<string>(type: "TEXT", maxLength: 100, nullable: false)
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -77,9 +77,9 @@ namespace PropertyManagement.Infrastructure.Database.Migrations
                 schema: "PTY",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    Name = table.Column<string>(type: "TEXT", maxLength: 100, nullable: false)
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -91,10 +91,10 @@ namespace PropertyManagement.Infrastructure.Database.Migrations
                 schema: "AUTH",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "TEXT", nullable: false),
-                    Name = table.Column<string>(type: "TEXT", maxLength: 256, nullable: true),
-                    NormalizedName = table.Column<string>(type: "TEXT", maxLength: 256, nullable: true),
-                    ConcurrencyStamp = table.Column<string>(type: "TEXT", nullable: true)
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
+                    NormalizedName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
+                    ConcurrencyStamp = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -106,21 +106,21 @@ namespace PropertyManagement.Infrastructure.Database.Migrations
                 schema: "AUTH",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "TEXT", nullable: false),
-                    UserName = table.Column<string>(type: "TEXT", maxLength: 256, nullable: true),
-                    NormalizedUserName = table.Column<string>(type: "TEXT", maxLength: 256, nullable: true),
-                    Email = table.Column<string>(type: "TEXT", maxLength: 256, nullable: true),
-                    NormalizedEmail = table.Column<string>(type: "TEXT", maxLength: 256, nullable: true),
-                    EmailConfirmed = table.Column<bool>(type: "INTEGER", nullable: false),
-                    PasswordHash = table.Column<string>(type: "TEXT", nullable: true),
-                    SecurityStamp = table.Column<string>(type: "TEXT", nullable: true),
-                    ConcurrencyStamp = table.Column<string>(type: "TEXT", nullable: true),
-                    PhoneNumber = table.Column<string>(type: "TEXT", nullable: true),
-                    PhoneNumberConfirmed = table.Column<bool>(type: "INTEGER", nullable: false),
-                    TwoFactorEnabled = table.Column<bool>(type: "INTEGER", nullable: false),
-                    LockoutEnd = table.Column<DateTimeOffset>(type: "TEXT", nullable: true),
-                    LockoutEnabled = table.Column<bool>(type: "INTEGER", nullable: false),
-                    AccessFailedCount = table.Column<int>(type: "INTEGER", nullable: false)
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
+                    NormalizedUserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
+                    Email = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
+                    NormalizedEmail = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
+                    EmailConfirmed = table.Column<bool>(type: "bit", nullable: false),
+                    PasswordHash = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    SecurityStamp = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ConcurrencyStamp = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    PhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    PhoneNumberConfirmed = table.Column<bool>(type: "bit", nullable: false),
+                    TwoFactorEnabled = table.Column<bool>(type: "bit", nullable: false),
+                    LockoutEnd = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: true),
+                    LockoutEnabled = table.Column<bool>(type: "bit", nullable: false),
+                    AccessFailedCount = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -132,10 +132,10 @@ namespace PropertyManagement.Infrastructure.Database.Migrations
                 schema: "PTY",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "TEXT", nullable: false),
-                    CountryId = table.Column<Guid>(type: "TEXT", nullable: false),
-                    Code = table.Column<string>(type: "TEXT", nullable: true),
-                    Name = table.Column<string>(type: "TEXT", maxLength: 200, nullable: false)
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    CountryId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Code = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Name = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -154,16 +154,16 @@ namespace PropertyManagement.Infrastructure.Database.Migrations
                 schema: "PTY",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "TEXT", nullable: false),
-                    Name = table.Column<string>(type: "TEXT", maxLength: 200, nullable: false),
-                    Address = table.Column<string>(type: "TEXT", maxLength: 400, nullable: true),
-                    BirthDate = table.Column<DateOnly>(type: "TEXT", nullable: true),
-                    IdentificationTypeId = table.Column<int>(type: "INTEGER", nullable: false),
-                    IdentificationNumber = table.Column<string>(type: "TEXT", maxLength: 100, nullable: false),
-                    CreatedAtUtc = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    CreatedBy = table.Column<string>(type: "TEXT", nullable: true),
-                    LastModifiedAtUtc = table.Column<DateTime>(type: "TEXT", nullable: true),
-                    LastModifiedBy = table.Column<string>(type: "TEXT", nullable: true)
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
+                    Address = table.Column<string>(type: "nvarchar(400)", maxLength: 400, nullable: true),
+                    BirthDate = table.Column<DateOnly>(type: "date", nullable: true),
+                    IdentificationTypeId = table.Column<int>(type: "int", nullable: false),
+                    IdentificationNumber = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    CreatedAtUtc = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    LastModifiedAtUtc = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    LastModifiedBy = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -182,11 +182,11 @@ namespace PropertyManagement.Infrastructure.Database.Migrations
                 schema: "AUTH",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    RoleId = table.Column<Guid>(type: "TEXT", nullable: false),
-                    ClaimType = table.Column<string>(type: "TEXT", nullable: true),
-                    ClaimValue = table.Column<string>(type: "TEXT", nullable: true)
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    RoleId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    ClaimType = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ClaimValue = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -205,11 +205,11 @@ namespace PropertyManagement.Infrastructure.Database.Migrations
                 schema: "AUTH",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    UserId = table.Column<Guid>(type: "TEXT", nullable: false),
-                    ClaimType = table.Column<string>(type: "TEXT", nullable: true),
-                    ClaimValue = table.Column<string>(type: "TEXT", nullable: true)
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    ClaimType = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ClaimValue = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -228,11 +228,11 @@ namespace PropertyManagement.Infrastructure.Database.Migrations
                 schema: "AUTH",
                 columns: table => new
                 {
-                    LoginProvider = table.Column<string>(type: "TEXT", nullable: false),
-                    ProviderKey = table.Column<string>(type: "TEXT", nullable: false),
-                    LoginDate = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    ProviderDisplayName = table.Column<string>(type: "TEXT", nullable: true),
-                    UserId = table.Column<Guid>(type: "TEXT", nullable: false)
+                    LoginProvider = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    ProviderKey = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    LoginDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    ProviderDisplayName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -251,8 +251,8 @@ namespace PropertyManagement.Infrastructure.Database.Migrations
                 schema: "AUTH",
                 columns: table => new
                 {
-                    UserId = table.Column<Guid>(type: "TEXT", nullable: false),
-                    RoleId = table.Column<Guid>(type: "TEXT", nullable: false)
+                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    RoleId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -278,12 +278,12 @@ namespace PropertyManagement.Infrastructure.Database.Migrations
                 schema: "AUTH",
                 columns: table => new
                 {
-                    UserId = table.Column<Guid>(type: "TEXT", nullable: false),
-                    LoginProvider = table.Column<string>(type: "TEXT", nullable: false),
-                    Name = table.Column<string>(type: "TEXT", nullable: false),
-                    Token = table.Column<string>(type: "TEXT", nullable: true),
-                    ExpiryTime = table.Column<DateTime>(type: "TEXT", nullable: true),
-                    Value = table.Column<string>(type: "TEXT", nullable: true)
+                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    LoginProvider = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Token = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ExpiryTime = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    Value = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -302,10 +302,10 @@ namespace PropertyManagement.Infrastructure.Database.Migrations
                 schema: "PTY",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "TEXT", nullable: false),
-                    CountryId = table.Column<Guid>(type: "TEXT", nullable: false),
-                    StateId = table.Column<Guid>(type: "TEXT", nullable: false),
-                    Name = table.Column<string>(type: "TEXT", maxLength: 200, nullable: false)
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    CountryId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    StateId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -327,25 +327,52 @@ namespace PropertyManagement.Infrastructure.Database.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "OwnerImages",
+                schema: "PTY",
+                columns: table => new
+                {
+                    OwnerId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    FileId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_OwnerImages", x => new { x.OwnerId, x.FileId });
+                    table.ForeignKey(
+                        name: "FK_OwnerImages_Files_FileId",
+                        column: x => x.FileId,
+                        principalSchema: "PTY",
+                        principalTable: "Files",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_OwnerImages_Owners_OwnerId",
+                        column: x => x.OwnerId,
+                        principalSchema: "PTY",
+                        principalTable: "Owners",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Properties",
                 schema: "PTY",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "TEXT", nullable: false),
-                    Name = table.Column<string>(type: "TEXT", maxLength: 200, nullable: false),
-                    Address = table.Column<string>(type: "TEXT", maxLength: 400, nullable: false),
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
+                    Address = table.Column<string>(type: "nvarchar(400)", maxLength: 400, nullable: false),
                     Price = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    CodeInternal = table.Column<int>(type: "INTEGER", nullable: false),
-                    Year = table.Column<int>(type: "INTEGER", nullable: false),
-                    StatusId = table.Column<int>(type: "INTEGER", nullable: false),
-                    CountryId = table.Column<Guid>(type: "TEXT", nullable: false),
-                    StateId = table.Column<Guid>(type: "TEXT", nullable: false),
-                    CityId = table.Column<Guid>(type: "TEXT", nullable: false),
-                    OwnerId = table.Column<Guid>(type: "TEXT", nullable: false),
-                    CreatedAtUtc = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    CreatedBy = table.Column<string>(type: "TEXT", nullable: true),
-                    LastModifiedAtUtc = table.Column<DateTime>(type: "TEXT", nullable: true),
-                    LastModifiedBy = table.Column<string>(type: "TEXT", nullable: true)
+                    CodeInternal = table.Column<int>(type: "int", nullable: false),
+                    Year = table.Column<int>(type: "int", nullable: false),
+                    StatusId = table.Column<int>(type: "int", nullable: false),
+                    CountryId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    StateId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    CityId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    OwnerId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    CreatedAtUtc = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    LastModifiedAtUtc = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    LastModifiedBy = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -392,11 +419,8 @@ namespace PropertyManagement.Infrastructure.Database.Migrations
                 schema: "PTY",
                 columns: table => new
                 {
-                    PropertyId = table.Column<Guid>(type: "TEXT", nullable: false),
-                    FileId = table.Column<Guid>(type: "TEXT", nullable: false),
-                    FileId1 = table.Column<Guid>(type: "TEXT", nullable: true),
-                    PropertyImageFileId = table.Column<Guid>(type: "TEXT", nullable: true),
-                    PropertyImagePropertyId = table.Column<Guid>(type: "TEXT", nullable: true)
+                    PropertyId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    FileId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -409,24 +433,12 @@ namespace PropertyManagement.Infrastructure.Database.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_PropertyImages_Files_FileId1",
-                        column: x => x.FileId1,
-                        principalSchema: "PTY",
-                        principalTable: "Files",
-                        principalColumn: "Id");
-                    table.ForeignKey(
                         name: "FK_PropertyImages_Properties_PropertyId",
                         column: x => x.PropertyId,
                         principalSchema: "PTY",
                         principalTable: "Properties",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_PropertyImages_PropertyImages_PropertyImagePropertyId_PropertyImageFileId",
-                        columns: x => new { x.PropertyImagePropertyId, x.PropertyImageFileId },
-                        principalSchema: "PTY",
-                        principalTable: "PropertyImages",
-                        principalColumns: new[] { "PropertyId", "FileId" });
                 });
 
             migrationBuilder.CreateTable(
@@ -434,16 +446,16 @@ namespace PropertyManagement.Infrastructure.Database.Migrations
                 schema: "PTY",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "TEXT", nullable: false),
-                    PropertyId = table.Column<Guid>(type: "TEXT", nullable: false),
-                    DateSale = table.Column<DateOnly>(type: "TEXT", nullable: false),
-                    Name = table.Column<string>(type: "TEXT", maxLength: 200, nullable: false),
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    PropertyId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    DateSale = table.Column<DateOnly>(type: "date", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
                     Value = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     Tax = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    CreatedAtUtc = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    CreatedBy = table.Column<string>(type: "TEXT", nullable: true),
-                    LastModifiedAtUtc = table.Column<DateTime>(type: "TEXT", nullable: true),
-                    LastModifiedBy = table.Column<string>(type: "TEXT", nullable: true)
+                    CreatedAtUtc = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    LastModifiedAtUtc = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    LastModifiedBy = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -455,48 +467,6 @@ namespace PropertyManagement.Infrastructure.Database.Migrations
                         principalTable: "Properties",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "OwnerImages",
-                schema: "PTY",
-                columns: table => new
-                {
-                    OwnerId = table.Column<Guid>(type: "TEXT", nullable: false),
-                    FileId = table.Column<Guid>(type: "TEXT", nullable: false),
-                    FileId1 = table.Column<Guid>(type: "TEXT", nullable: true),
-                    PropertyImageFileId = table.Column<Guid>(type: "TEXT", nullable: true),
-                    PropertyImagePropertyId = table.Column<Guid>(type: "TEXT", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_OwnerImages", x => new { x.OwnerId, x.FileId });
-                    table.ForeignKey(
-                        name: "FK_OwnerImages_Files_FileId",
-                        column: x => x.FileId,
-                        principalSchema: "PTY",
-                        principalTable: "Files",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_OwnerImages_Files_FileId1",
-                        column: x => x.FileId1,
-                        principalSchema: "PTY",
-                        principalTable: "Files",
-                        principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_OwnerImages_Owners_OwnerId",
-                        column: x => x.OwnerId,
-                        principalSchema: "PTY",
-                        principalTable: "Owners",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_OwnerImages_PropertyImages_PropertyImagePropertyId_PropertyImageFileId",
-                        columns: x => new { x.PropertyImagePropertyId, x.PropertyImageFileId },
-                        principalSchema: "PTY",
-                        principalTable: "PropertyImages",
-                        principalColumns: new[] { "PropertyId", "FileId" });
                 });
 
             migrationBuilder.CreateIndex(
@@ -523,18 +493,6 @@ namespace PropertyManagement.Infrastructure.Database.Migrations
                 schema: "PTY",
                 table: "OwnerImages",
                 column: "FileId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_OwnerImages_FileId1",
-                schema: "PTY",
-                table: "OwnerImages",
-                column: "FileId1");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_OwnerImages_PropertyImagePropertyId_PropertyImageFileId",
-                schema: "PTY",
-                table: "OwnerImages",
-                columns: new[] { "PropertyImagePropertyId", "PropertyImageFileId" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_Owners_IdentificationTypeId_IdentificationNumber",
@@ -586,18 +544,6 @@ namespace PropertyManagement.Infrastructure.Database.Migrations
                 column: "FileId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_PropertyImages_FileId1",
-                schema: "PTY",
-                table: "PropertyImages",
-                column: "FileId1");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_PropertyImages_PropertyImagePropertyId_PropertyImageFileId",
-                schema: "PTY",
-                table: "PropertyImages",
-                columns: new[] { "PropertyImagePropertyId", "PropertyImageFileId" });
-
-            migrationBuilder.CreateIndex(
                 name: "IX_PropertyTraces_PropertyId",
                 schema: "PTY",
                 table: "PropertyTraces",
@@ -614,7 +560,8 @@ namespace PropertyManagement.Infrastructure.Database.Migrations
                 schema: "AUTH",
                 table: "Roles",
                 column: "NormalizedName",
-                unique: true);
+                unique: true,
+                filter: "[NormalizedName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
                 name: "IX_States_CountryId",
@@ -651,7 +598,8 @@ namespace PropertyManagement.Infrastructure.Database.Migrations
                 schema: "AUTH",
                 table: "Users",
                 column: "NormalizedUserName",
-                unique: true);
+                unique: true,
+                filter: "[NormalizedUserName] IS NOT NULL");
         }
 
         /// <inheritdoc />
@@ -659,6 +607,10 @@ namespace PropertyManagement.Infrastructure.Database.Migrations
         {
             migrationBuilder.DropTable(
                 name: "OwnerImages",
+                schema: "PTY");
+
+            migrationBuilder.DropTable(
+                name: "PropertyImages",
                 schema: "PTY");
 
             migrationBuilder.DropTable(
@@ -686,7 +638,11 @@ namespace PropertyManagement.Infrastructure.Database.Migrations
                 schema: "AUTH");
 
             migrationBuilder.DropTable(
-                name: "PropertyImages",
+                name: "Files",
+                schema: "PTY");
+
+            migrationBuilder.DropTable(
+                name: "Properties",
                 schema: "PTY");
 
             migrationBuilder.DropTable(
@@ -696,14 +652,6 @@ namespace PropertyManagement.Infrastructure.Database.Migrations
             migrationBuilder.DropTable(
                 name: "Users",
                 schema: "AUTH");
-
-            migrationBuilder.DropTable(
-                name: "Files",
-                schema: "PTY");
-
-            migrationBuilder.DropTable(
-                name: "Properties",
-                schema: "PTY");
 
             migrationBuilder.DropTable(
                 name: "Cities",

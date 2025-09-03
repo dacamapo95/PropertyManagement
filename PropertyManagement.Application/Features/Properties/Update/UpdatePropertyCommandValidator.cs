@@ -11,8 +11,6 @@ public sealed class UpdatePropertyCommandValidator : AbstractValidator<UpdatePro
         RuleFor(x => x.Address).NotEmpty().MaximumLength(400);
         RuleFor(x => x.CodeInternal).GreaterThan(0);
         RuleFor(x => x.Year).InclusiveBetween(1800, DateTime.UtcNow.Year + 1);
-        RuleFor(x => x.CountryId).NotEmpty();
-        RuleFor(x => x.StateId).NotEmpty();
         RuleFor(x => x.CityId).NotEmpty();
         RuleFor(x => x.StatusId).GreaterThan(0);
 

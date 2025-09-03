@@ -1,4 +1,3 @@
-using PropertyManagement.Domain.Properties;
 using PropertyManagement.Shared.Primitives;
 
 namespace PropertyManagement.Domain.Countries;
@@ -10,9 +9,5 @@ public sealed class Country : MasterEntity<Guid>
     public int? IsoNumeric { get; set; } // ISO 3166-1 numeric
     public string? PhoneCode { get; set; }
     public string? CurrencyCode { get; set; }
-
     public ICollection<State> States { get; set; } = new List<State>();
-    public ICollection<City> Cities { get; set; } = new List<City>();
-
-    public ICollection<Property>  Properties { get; set; } = new List<Property>();
 }

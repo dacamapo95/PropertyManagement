@@ -10,8 +10,6 @@ public sealed class PropertyRepository(ApplicationDbContext context)
     {
         return await Query
             .Include(p => p.Status)
-            .Include(p => p.Country)
-            .Include(p => p.State)
             .Include(p => p.City)
             .Include(p => p.Owner)
                 .ThenInclude(o => o.OwnerImages)

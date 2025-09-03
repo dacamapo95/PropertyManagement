@@ -1,4 +1,5 @@
 using PropertyManagement.Application.Core.Abstractions;
+using PropertyManagement.Domain.Files;
 using PropertyManagement.Domain.Owners;
 using PropertyManagement.Domain.Properties;
 using PropertyManagement.Shared.Results;
@@ -6,15 +7,15 @@ using PropertyManagement.Shared.Results;
 namespace PropertyManagement.Application.Features.Properties.Create;
 
 public sealed class CreatePropertyCommandHandler(
-    IPropertyRepository properties,
-    Domain.Files.IFileRepository files,
-    IOwnerRepository owners,
+    IPropertyRepository propertyRepositoy,
+    IFileRepository fileRepository,
+    IOwnerRepository ownerRepository,
     IUnitOfWork unitOfWork)
     : ICommandHandler<CreatePropertyCommand, CreatePropertyResponse>
 {
-    private readonly IPropertyRepository _properties = properties;
-    private readonly Domain.Files.IFileRepository _files = files;
-    private readonly IOwnerRepository _ownerRepository = owners;
+    private readonly IPropertyRepository _propertyRepository = propertyRepositoy;
+    private readonly IFileRepository _fileRepository = fileRepository;
+    private readonly IOwnerRepository _ownerRepository = ownerRepository;
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
 
     public async Task<Result<CreatePropertyResponse>> Handle(CreatePropertyCommand request, CancellationToken cancellationToken)
@@ -40,7 +41,7 @@ public sealed class CreatePropertyCommandHandler(
         AttachPropertyImages(property, request.PropertyFileIds);
         AttachOwnerImages(owner, request.Owner.OwnerFileIds);
 
-        _properties.Add(property); 
+        _propertyRepository.Add(property); 
 
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
@@ -77,7 +78,7 @@ public sealed class CreatePropertyCommandHandler(
         var distinct = ids?.Where(id => id != Guid.Empty).Distinct().ToList() ?? new List<Guid>();
         if (distinct.Count == 0) return Result.Success();
 
-        var existsCount = await _files.CountAsync(f => distinct.Contains(f.Id), ct);
+        var existsCount = await _fileRepository.CountAsync(f => distinct.Contains(f.Id), ct);
         if (existsCount != distinct.Count)
             return Error.NotFound("One or more files were not found.");
 
@@ -92,8 +93,6 @@ public sealed class CreatePropertyCommandHandler(
             Address = request.Address,
             CodeInternal = request.CodeInternal,
             Year = request.Year,
-            CountryId = request.CountryId,
-            StateId = request.StateId,
             CityId = request.CityId,
             OwnerId = owner.Id,
         };

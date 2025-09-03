@@ -17,8 +17,6 @@ public sealed record UpdatePropertyCommand(
     string Address,
     int CodeInternal,
     int Year,
-    Guid CountryId,
-    Guid StateId,
     Guid CityId,
     int StatusId,
     decimal? Price,

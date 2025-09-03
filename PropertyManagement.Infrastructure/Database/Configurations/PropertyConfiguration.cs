@@ -8,7 +8,6 @@ public sealed class PropertyConfiguration : IEntityTypeConfiguration<Property>
 {
     public void Configure(EntityTypeBuilder<Property> builder)
     {
-
         builder.Property(x => x.Name).IsRequired().HasMaxLength(200);
         builder.Property(x => x.Address).IsRequired().HasMaxLength(400);
         builder.Property(x => x.Price).IsRequired().HasColumnType("decimal(18,2)");
@@ -19,16 +18,6 @@ public sealed class PropertyConfiguration : IEntityTypeConfiguration<Property>
         builder.HasOne(x => x.Status)
                .WithMany(x => x.Properties)
                .HasForeignKey(x => x.StatusId)
-               .OnDelete(DeleteBehavior.Restrict);
-
-        builder.HasOne(x => x.Country)
-               .WithMany(x => x.Properties)
-               .HasForeignKey(x => x.CountryId)
-               .OnDelete(DeleteBehavior.Restrict);
-
-        builder.HasOne(x => x.State)
-               .WithMany(x => x.Properties)
-               .HasForeignKey(x => x.StateId)
                .OnDelete(DeleteBehavior.Restrict);
 
         builder.HasOne(x => x.City)
@@ -43,6 +32,6 @@ public sealed class PropertyConfiguration : IEntityTypeConfiguration<Property>
 
         builder.HasIndex(x => x.Price);
         builder.HasIndex(x => x.StatusId);
-        builder.HasIndex(x => new { x.CountryId, x.StateId, x.CityId });
+        builder.HasIndex(x => x.CityId);
     }
 }

@@ -11,6 +11,4 @@ public sealed class State : MasterEntity<Guid>
     public string? Code { get; set; }
 
     public ICollection<City> Cities { get; set; } = new List<City>();
-
-    public ICollection<Property> Properties { get; set; } = new List<Property>();
 }

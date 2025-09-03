@@ -193,7 +193,6 @@ public sealed class DatabaseInitializer(UserManager<User> userManager, RoleManag
                     {
                         Id = Guid.NewGuid(),
                         Name = cityName,
-                        CountryId = country.Id,
                         StateId = state.Id
                     });
                 }

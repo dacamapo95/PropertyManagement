@@ -19,8 +19,6 @@ public sealed record CreatePropertyCommand(
     int CodeInternal,
     int Year,
     int StatusId,
-    Guid CountryId,
-    Guid StateId,
     Guid CityId,
     OwnerCommand Owner,
     IReadOnlyList<Guid> PropertyFileIds

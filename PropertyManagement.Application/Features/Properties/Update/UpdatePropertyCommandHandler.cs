@@ -32,8 +32,6 @@ public sealed class UpdatePropertyCommandHandler(
         property.Address = request.Address;
         property.CodeInternal = request.CodeInternal;
         property.Year = request.Year;
-        property.CountryId = request.CountryId;
-        property.StateId = request.StateId;
         property.CityId = request.CityId;
 
         var statusResult = property.SetStatus((PropertyStatusEnum)request.StatusId);
