@@ -25,14 +25,14 @@ public static class DependencyInjection
 {
     public static IServiceCollection AddInfrastructureServices(this IServiceCollection services, IConfiguration configuration)
     {
-        var inMemorySqliteConnection = new Microsoft.Data.Sqlite.SqliteConnection("DataSource=:memory:");
-        inMemorySqliteConnection.Open();
-
         services.AddDbContext<ApplicationDbContext>((sp, options) =>
-
+        {
             options.AddInterceptors(sp.GetServices<ISaveChangesInterceptor>())
-                   .UseSqlite(inMemorySqliteConnection)
-        );
+                   .UseSqlServer(configuration.GetConnectionString("Default"), sql =>
+                   {
+                       sql.MigrationsAssembly(typeof(ApplicationDbContext).Assembly.FullName);
+                   });
+        });
 
         services.AddScoped<ISaveChangesInterceptor, AuditableEntitySaveChangesInterceptor>();
 
