@@ -15,7 +15,6 @@ public sealed record CreatePropertyCommand(
     string Name,
     string Address,
     decimal Price,
-    decimal? Tax,
     int CodeInternal,
     int Year,
     int StatusId,

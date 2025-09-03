@@ -17,11 +17,6 @@ public sealed class CreatePropertyCommandValidator : AbstractValidator<CreatePro
         RuleFor(x => x.Price)
             .GreaterThan(0).WithMessage("Price must be greater than 0.");
 
-        // Tax is not required on create; if provided, must be >= 0
-        RuleFor(x => x.Tax)
-            .GreaterThanOrEqualTo(0).When(x => x.Tax.HasValue)
-            .WithMessage("Tax must be greater than or equal to 0.");
-
         RuleFor(x => x.CodeInternal)
             .GreaterThan(0).WithMessage("Internal code must be greater than 0.");
 

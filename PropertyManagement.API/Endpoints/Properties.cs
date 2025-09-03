@@ -1,48 +1,13 @@
 using Carter;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using PropertyManagement.API.Contracts.Mappings;
+using PropertyManagement.API.Contracts.Requests.Properties;
 using PropertyManagement.API.Extensions;
 using PropertyManagement.Application.Features.Properties.Create;
 using PropertyManagement.Application.Features.Properties.GetById;
-using PropertyManagement.Application.Features.Properties.Update;
 
 namespace PropertyManagement.API.Endpoints;
-
-public sealed record CreatePropertyRequest(
-    string Name,
-    string Address,
-    decimal Price,
-    decimal Tax,
-    int CodeInternal,
-    int Year,
-    int StatusId,
-    Guid CityId,
-    OwnerDto Owner,
-    IReadOnlyList<Guid> PropertyFileIds
-);
-
-public sealed record OwnerDto(
-    int IdentificationTypeId,
-    string IdentificationNumber,
-    string Name,
-    string? Address,
-    DateOnly? BirthDate,
-    IReadOnlyList<Guid> OwnerFileIds
-);
-
-public sealed record UpdatePropertyRequest(
-    string Name,
-    string Address,
-    int CodeInternal,
-    int Year,
-    Guid CityId,
-    int StatusId,
-    decimal? Price,
-    decimal? Tax,
-    DateOnly? PriceDate,
-    OwnerDto Owner,
-    IReadOnlyList<Guid> PropertyFileIds
-);
 
 public sealed class Properties : ICarterModule
 {
@@ -52,17 +17,11 @@ public sealed class Properties : ICarterModule
 
         group.MapPost("", async ([FromBody] CreatePropertyRequest req, ISender sender, CancellationToken ct) =>
         {
-            var ownerInput = new OwnerCommand(
-                req.Owner.IdentificationTypeId, req.Owner.IdentificationNumber, req.Owner.Name, req.Owner.Address, req.Owner.BirthDate, req.Owner.OwnerFileIds);
-
-            var cmd = new CreatePropertyCommand(
-                req.Name, req.Address, req.Price, req.Tax, req.CodeInternal, req.Year, req.StatusId,
-                req.CityId,
-                ownerInput,
-                req.PropertyFileIds);
-
-            var result = await sender.Send(cmd, ct);
-            return result.IsValid ? Results.Created($"/api/properties/{result.Value.Id}", result.Value) : ResultExtension.ResultToResponse(result);
+            var command = req.ToCommand();
+            var result = await sender.Send(command, ct);
+            return result.IsValid ? Results.CreatedAtRoute(
+                "GetProperty", 
+                new { result.Value.Id}) : ResultExtension.ResultToResponse(result);
         })
         .Produces<CreatePropertyResponse>(StatusCodes.Status201Created)
         .ProducesProblem(StatusCodes.Status400BadRequest)
@@ -74,33 +33,13 @@ public sealed class Properties : ICarterModule
             return result.IsValid ? Results.Ok(result.Value) : ResultExtension.ResultToResponse(result);
         })
         .Produces<PropertyResponse>(StatusCodes.Status200OK)
-        .ProducesProblem(StatusCodes.Status404NotFound);
+        .ProducesProblem(StatusCodes.Status404NotFound)
+        .WithName("GetProperty");
 
         group.MapPut("/{id:guid}", async (Guid id, [FromBody] UpdatePropertyRequest req, ISender sender, CancellationToken ct) =>
         {
-            var ownerUpdate = new OwnerUpdate(
-                req.Owner.IdentificationTypeId,
-                req.Owner.IdentificationNumber,
-                req.Owner.Name,
-                req.Owner.Address,
-                req.Owner.BirthDate,
-                req.Owner.OwnerFileIds);
-
-            var cmd = new UpdatePropertyCommand(
-                id,
-                req.Name,
-                req.Address,
-                req.CodeInternal,
-                req.Year,
-                req.CityId,
-                req.StatusId,
-                req.Price,
-                req.Tax,
-                req.PriceDate,
-                ownerUpdate,
-                req.PropertyFileIds);
-
-            var result = await sender.Send(cmd, ct);
+            var command = req.ToCommand(id);
+            var result = await sender.Send(command, ct);
             return result.IsValid ? Results.NoContent() : ResultExtension.ResultToResponse(result);
         })
         .Produces(StatusCodes.Status204NoContent)

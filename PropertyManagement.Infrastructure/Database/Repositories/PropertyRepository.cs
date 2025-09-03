@@ -18,4 +18,9 @@ public sealed class PropertyRepository(ApplicationDbContext context)
                 .ThenInclude(pi => pi.File)
             .FirstOrDefaultAsync(p => p.Id == id, cancellationToken);
     }
+
+    public async Task<Property?> GetByCodeInternalAsync(int codeInternal, CancellationToken cancellationToken = default)
+    {
+        return await Find(p => p.CodeInternal == codeInternal, cancellationToken);
+    }
 }

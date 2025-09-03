@@ -20,15 +20,20 @@ public sealed class CreatePropertyCommandHandler(
 
     public async Task<Result<CreatePropertyResponse>> Handle(CreatePropertyCommand request, CancellationToken cancellationToken)
     {
-        var ownerResult = await GetOrCreateOwnerAsync(request.Owner, cancellationToken);
-        if (ownerResult.IsFailure) return ownerResult.Error;
-        var owner = ownerResult.Value;
+        var existing = await _propertyRepository.GetByCodeInternalAsync(request.CodeInternal, cancellationToken);
 
-        var filesOk = await ValidateFilesExistAsync(request.PropertyFileIds, cancellationToken);
-        if (filesOk.IsFailure) return filesOk.Error;
+        if (existing is not null)
+        {
+            return Error.Conflict($"A property with code {request.CodeInternal} already exists.");
+        }
 
-        filesOk = await ValidateFilesExistAsync(request.Owner.OwnerFileIds, cancellationToken);
-        if (filesOk.IsFailure) return filesOk.Error;
+        var owner = await GetOrCreateOwnerAsync(request.Owner, cancellationToken);
+
+        var fileIdsAreValidResult = await ValidateFilesExistAsync(
+            request.PropertyFileIds.Concat(request.Owner.OwnerFileIds).Where(id => id != Guid.Empty).Distinct(), 
+            cancellationToken);
+
+        if (fileIdsAreValidResult.IsFailure) return fileIdsAreValidResult.Error;
 
         var property = BuildProperty(request, owner);
 
@@ -48,7 +53,7 @@ public sealed class CreatePropertyCommandHandler(
         return new CreatePropertyResponse(property.Id);
     }
 
-    private async Task<Result<Owner>> GetOrCreateOwnerAsync(OwnerCommand input, CancellationToken ct)
+    private async Task<Owner> GetOrCreateOwnerAsync(OwnerCommand input, CancellationToken ct)
     {
         var owner = await _ownerRepository.GetByIdentificationAsync(input.IdentificationTypeId, input.IdentificationNumber, ct);
         if (owner is not null)
@@ -75,17 +80,19 @@ public sealed class CreatePropertyCommandHandler(
 
     private async Task<Result> ValidateFilesExistAsync(IEnumerable<Guid> ids, CancellationToken ct)
     {
-        var distinct = ids?.Where(id => id != Guid.Empty).Distinct().ToList() ?? new List<Guid>();
-        if (distinct.Count == 0) return Result.Success();
+        if (!ids.Any())
+            return Result.Success();
 
-        var existsCount = await _fileRepository.CountAsync(f => distinct.Contains(f.Id), ct);
-        if (existsCount != distinct.Count)
+        var distinctFileIds = ids?.Where(id => id != Guid.Empty).Distinct().ToList() ?? new List<Guid>();
+
+        var existsCount = await _fileRepository.CountAsync(f => distinctFileIds.Contains(f.Id), ct);
+        if (existsCount != distinctFileIds.Count)
             return Error.NotFound("One or more files were not found.");
 
         return Result.Success();
     }
 
-    private static Property BuildProperty(CreatePropertyCommand request, Owner owner)
+    private Property BuildProperty(CreatePropertyCommand request, Owner owner)
     {
         return new Property
         {
@@ -98,7 +105,7 @@ public sealed class CreatePropertyCommandHandler(
         };
     }
 
-    private static Result ApplyStatus(Property property, int statusId)
+    private Result ApplyStatus(Property property, int statusId)
     {
         if ((PropertyStatusEnum)statusId == PropertyStatusEnum.Sold)
             return Error.Validation("Cannot create a property with Sold status.");
@@ -107,16 +114,15 @@ public sealed class CreatePropertyCommandHandler(
         return result.IsFailure ? result.Error : Result.Success();
     }
 
-    private static Result ApplyInitialPrice(Property property, decimal price)
+    private Result ApplyInitialPrice(Property property, decimal price)
     {
         return property.SetInitialPrice(price);
     }
 
-    private static void AttachPropertyImages(Property property, IEnumerable<Guid> fileIds)
+    private void AttachPropertyImages(Property property, IEnumerable<Guid> fileIds)
     {
         foreach (var id in fileIds.Distinct())
         {
-            if (id == Guid.Empty) continue;
             property.Images.Add(new PropertyImage
             {
                 PropertyId = property.Id,
@@ -125,11 +131,10 @@ public sealed class CreatePropertyCommandHandler(
         }
     }
 
-    private static void AttachOwnerImages(Owner owner, IEnumerable<Guid> fileIds)
+    private void AttachOwnerImages(Owner owner, IEnumerable<Guid> fileIds)
     {
         foreach (var id in fileIds.Distinct())
         {
-            if (id == Guid.Empty) continue;
             owner.OwnerImages.Add(new OwnerImage
             {
                 OwnerId = owner.Id,

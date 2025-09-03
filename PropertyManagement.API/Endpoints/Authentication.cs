@@ -3,12 +3,9 @@ using Microsoft.AspNetCore.Mvc;
 using PropertyManagement.API.Extensions;
 using PropertyManagement.Infrastructure.Authentication.Interfaces;
 using PropertyManagement.Infrastructure.Authentication.Contracts;
+using PropertyManagement.API.Contracts.Requests.Auth;
 
 namespace PropertyManagement.API.Endpoints;
-
-public sealed record LoginRequest(string Email, string Password);
-public sealed record RefreshRequest(string RefreshToken);
-
 
 public sealed class Authentication : ICarterModule
 {

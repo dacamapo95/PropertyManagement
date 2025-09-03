@@ -33,5 +33,6 @@ public sealed class PropertyConfiguration : IEntityTypeConfiguration<Property>
         builder.HasIndex(x => x.Price);
         builder.HasIndex(x => x.StatusId);
         builder.HasIndex(x => x.CityId);
+        builder.HasIndex(x => x.CodeInternal).IsUnique();
     }
 }
