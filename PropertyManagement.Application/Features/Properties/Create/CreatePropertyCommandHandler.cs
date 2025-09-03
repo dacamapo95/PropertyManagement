@@ -23,11 +23,9 @@ public sealed class CreatePropertyCommandHandler(
         if (ownerResult.IsFailure) return ownerResult.Error;
         var owner = ownerResult.Value;
 
-        // Validate that all property file ids exist
         var filesOk = await ValidateFilesExistAsync(request.PropertyFileIds, cancellationToken);
         if (filesOk.IsFailure) return filesOk.Error;
 
-        // Validate that all owner file ids exist
         filesOk = await ValidateFilesExistAsync(request.Owner.OwnerFileIds, cancellationToken);
         if (filesOk.IsFailure) return filesOk.Error;
 
@@ -36,7 +34,7 @@ public sealed class CreatePropertyCommandHandler(
         var statusResult = ApplyStatus(property, request.StatusId);
         if (statusResult.IsFailure) return statusResult.Error;
 
-        var priceResult = ApplyInitialPrice(property, request.Price);
+        var priceResult = ApplyInitialPrice(property, request.Price, request.Tax);
         if (priceResult.IsFailure) return priceResult.Error;
 
         AttachPropertyImages(property, request.PropertyFileIds);
@@ -54,7 +52,6 @@ public sealed class CreatePropertyCommandHandler(
         var owner = await _ownerRepository.GetByIdentificationAsync(input.IdentificationTypeId, input.IdentificationNumber, ct);
         if (owner is not null)
         {
-            // Optionally update basic data
             owner.Name = input.Name;
             owner.Address = input.Address;
             owner.BirthDate = input.BirthDate;
@@ -108,9 +105,9 @@ public sealed class CreatePropertyCommandHandler(
         return result.IsFailure ? result.Error : Result.Success();
     }
 
-    private static Result ApplyInitialPrice(Property property, decimal price)
+    private static Result ApplyInitialPrice(Property property, decimal price, decimal tax)
     {
-        var result = property.ChangePrice(price, DateOnly.FromDateTime(DateTime.UtcNow));
+        var result = property.ChangePrice(price, DateOnly.FromDateTime(DateTime.UtcNow), tax);
         return result.IsFailure ? result.Error : Result.Success();
     }
 

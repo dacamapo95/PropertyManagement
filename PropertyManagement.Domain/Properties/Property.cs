@@ -26,12 +26,15 @@ public sealed class Property : AuditableEntity<Guid>
     public ICollection<PropertyImage> Images { get; set; } = [];
     public ICollection<PropertyTrace> Traces { get; set; } = [];
 
-    public Result ChangePrice(decimal newPrice, DateOnly changeDate)
+    public Result ChangePrice(decimal newPrice, DateOnly changeDate, decimal tax)
     {
         if (newPrice <= 0)
             return Error.Validation("Price must be greater than zero.");
 
-        var trace = PropertyTrace.Create(Id, name: "Price Update", value: newPrice, tax: 0m, dateSale: changeDate);
+        if (tax < 0)
+            return Error.Validation("Tax must be greater than or equal to zero.");
+
+        var trace = PropertyTrace.Create(Id, name: "Price Update", value: newPrice, tax: tax, dateSale: changeDate);
         Price = newPrice;
         Traces.Add(trace);
         return Result.Success();

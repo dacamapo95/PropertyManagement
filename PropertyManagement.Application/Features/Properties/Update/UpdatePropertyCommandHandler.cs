@@ -1,5 +1,4 @@
 using PropertyManagement.Application.Core.Abstractions;
-using PropertyManagement.Domain.Files;
 using PropertyManagement.Domain.Owners;
 using PropertyManagement.Domain.Properties;
 using PropertyManagement.Shared.Results;
@@ -8,13 +7,13 @@ namespace PropertyManagement.Application.Features.Properties.Update;
 
 public sealed class UpdatePropertyCommandHandler(
     IPropertyRepository repo,
-    IFileRepository files,
+    Domain.Files.IFileRepository files,
     IOwnerRepository owners,
     IUnitOfWork uow)
     : ICommandHandler<UpdatePropertyCommand>
 {
     private readonly IPropertyRepository _repo = repo;
-    private readonly IFileRepository _files = files;
+    private readonly Domain.Files.IFileRepository _files = files;
     private readonly IOwnerRepository _owners = owners;
     private readonly IUnitOfWork _uow = uow;
 
@@ -42,7 +41,7 @@ public sealed class UpdatePropertyCommandHandler(
 
         if (request.Price.HasValue && request.PriceDate.HasValue)
         {
-            var priceResult = property.ChangePrice(request.Price.Value, request.PriceDate.Value);
+            var priceResult = property.ChangePrice(request.Price.Value, request.PriceDate.Value, request.Tax!.Value);
             if (priceResult.IsFailure) return priceResult.Error;
         }
 
@@ -56,11 +55,10 @@ public sealed class UpdatePropertyCommandHandler(
         }
 
         property.Images.Clear();
-
         foreach (var id in request.PropertyFileIds.Distinct())
         {
             if (id == Guid.Empty) continue;
-            property.Images.Add(new PropertyImage
+            property.Images.Add(new Domain.Properties.PropertyImage
             {
                 PropertyId = property.Id,
                 FileId = id
@@ -68,11 +66,10 @@ public sealed class UpdatePropertyCommandHandler(
         }
 
         ownerTarget.OwnerImages.Clear();
-
         foreach (var id in request.Owner.OwnerFileIds.Distinct())
         {
             if (id == Guid.Empty) continue;
-            ownerTarget.OwnerImages.Add(new OwnerImage
+            ownerTarget.OwnerImages.Add(new Domain.Owners.OwnerImage
             {
                 OwnerId = ownerTarget.Id,
                 FileId = id

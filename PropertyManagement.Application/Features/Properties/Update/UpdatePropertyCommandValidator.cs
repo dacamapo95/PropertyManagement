@@ -28,6 +28,8 @@ public sealed class UpdatePropertyCommandValidator : AbstractValidator<UpdatePro
         When(x => x.Price.HasValue, () =>
         {
             RuleFor(x => x.Price!.Value).GreaterThan(0);
+            RuleFor(x => x.Tax).NotNull();
+            RuleFor(x => x.Tax!.Value).GreaterThanOrEqualTo(0);
             RuleFor(x => x.PriceDate).NotNull();
         });
     }

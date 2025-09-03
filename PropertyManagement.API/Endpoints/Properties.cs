@@ -12,6 +12,7 @@ public sealed record CreatePropertyRequest(
     string Name,
     string Address,
     decimal Price,
+    decimal Tax,
     int CodeInternal,
     int Year,
     int StatusId,
@@ -41,6 +42,7 @@ public sealed record UpdatePropertyRequest(
     Guid CityId,
     int StatusId,
     decimal? Price,
+    decimal? Tax,
     DateOnly? PriceDate,
     OwnerDto Owner,
     IReadOnlyList<Guid> PropertyFileIds
@@ -58,7 +60,7 @@ public sealed class Properties : ICarterModule
                 req.Owner.IdentificationTypeId, req.Owner.IdentificationNumber, req.Owner.Name, req.Owner.Address, req.Owner.BirthDate, req.Owner.OwnerFileIds);
 
             var cmd = new CreatePropertyCommand(
-                req.Name, req.Address, req.Price, req.CodeInternal, req.Year, req.StatusId,
+                req.Name, req.Address, req.Price, req.Tax, req.CodeInternal, req.Year, req.StatusId,
                 req.CountryId, req.StateId, req.CityId,
                 ownerInput,
                 req.PropertyFileIds);
@@ -99,6 +101,7 @@ public sealed class Properties : ICarterModule
                 req.CityId,
                 req.StatusId,
                 req.Price,
+                req.Tax,
                 req.PriceDate,
                 ownerUpdate,
                 req.PropertyFileIds);
