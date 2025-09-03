@@ -24,13 +24,13 @@ public sealed class Property : AuditableEntity<Guid>
     public ICollection<PropertyImage> Images { get; set; } = [];
     public ICollection<PropertyTrace> Traces { get; set; } = [];
 
-    public Result ChangePrice(decimal newPrice, DateOnly changeDate, decimal tax)
+    public Result ChangePrice(decimal newPrice, DateTime changeDate, decimal tax)
     {
         if (newPrice <= 0)
             return Error.Validation("Price must be greater than zero.");
 
-        if (tax < 0)
-            return Error.Validation("Tax must be greater than or equal to zero.");
+        if (tax < 0 && StatusId == (int)PropertyStatusEnum.Sold)
+            return Error.Validation("Tax must be greater than or equal to zero to sell property.");
 
         var trace = PropertyTrace.Create(Id, name: "Price Update", value: newPrice, tax: tax, dateSale: changeDate);
         Price = newPrice;

@@ -21,7 +21,6 @@ public sealed record UpdatePropertyCommand(
     int StatusId,
     decimal? Price,
     decimal? Tax,
-    DateOnly? PriceDate,
     OwnerUpdate Owner,
     IReadOnlyList<Guid> PropertyFileIds
 ) : ICommand;

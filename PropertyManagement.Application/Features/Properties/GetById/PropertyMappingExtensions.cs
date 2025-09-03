@@ -11,6 +11,7 @@ public static class PropertyMappingExtensions
             .Select(oi => new OwnerImageResponse(
                 oi.FileId,
                 oi.File.OriginalName,
+                oi.File.Name,
                 oi.File.MimeType,
                 oi.File.Size,
                 oi.File.Content is null ? string.Empty : Convert.ToBase64String(oi.File.Content)))
@@ -31,6 +32,7 @@ public static class PropertyMappingExtensions
         return images
             .Select(pi => new PropertyImageResponse(
                 pi.FileId,
+                pi.File.Name,   
                 pi.File.OriginalName,
                 pi.File.MimeType,
                 pi.File.Size,

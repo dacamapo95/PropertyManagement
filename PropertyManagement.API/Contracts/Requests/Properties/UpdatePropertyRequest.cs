@@ -9,7 +9,6 @@ public sealed record UpdatePropertyRequest(
     int StatusId,
     decimal? Price,
     decimal? Tax,
-    DateOnly? PriceDate,
     OwnerRequest Owner,
     IReadOnlyList<Guid> PropertyFileIds
 );

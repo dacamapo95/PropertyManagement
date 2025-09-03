@@ -16,5 +16,5 @@ public static class PropertyRequestMappings
         => new(req.IdentificationTypeId, req.IdentificationNumber, req.Name, req.Address, req.BirthDate, req.OwnerFileIds);
 
     public static UpdatePropertyCommand ToCommand(this UpdatePropertyRequest req, Guid id)
-        => new(id, req.Name, req.Address, req.CodeInternal, req.Year, req.CityId, req.StatusId, req.Price, req.Tax, req.PriceDate, req.Owner.ToUpdate(), req.PropertyFileIds);
+        => new(id, req.Name, req.Address, req.CodeInternal, req.Year, req.CityId, req.StatusId, req.Price, req.Tax, req.Owner.ToUpdate(), req.PropertyFileIds);
 }

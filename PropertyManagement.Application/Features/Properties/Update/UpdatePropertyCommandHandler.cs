@@ -1,4 +1,5 @@
 using PropertyManagement.Application.Core.Abstractions;
+using PropertyManagement.Domain.Files;
 using PropertyManagement.Domain.Owners;
 using PropertyManagement.Domain.Properties;
 using PropertyManagement.Shared.Results;
@@ -6,27 +7,33 @@ using PropertyManagement.Shared.Results;
 namespace PropertyManagement.Application.Features.Properties.Update;
 
 public sealed class UpdatePropertyCommandHandler(
-    IPropertyRepository repo,
-    Domain.Files.IFileRepository files,
-    IOwnerRepository owners,
+    IPropertyRepository propertyRepository,
+    IFileRepository fileReposistory,
+    IOwnerRepository ownerRepository,
     IUnitOfWork uow)
     : ICommandHandler<UpdatePropertyCommand>
 {
-    private readonly IPropertyRepository _repo = repo;
-    private readonly Domain.Files.IFileRepository _files = files;
-    private readonly IOwnerRepository _owners = owners;
+    private readonly IPropertyRepository _propertyRepository = propertyRepository;
+    private readonly IFileRepository _fileRepository = fileReposistory;
+    private readonly IOwnerRepository _ownerRepository = ownerRepository;
     private readonly IUnitOfWork _uow = uow;
 
     public async Task<Result> Handle(UpdatePropertyCommand request, CancellationToken cancellationToken)
     {
-        var property = await _repo.GetDetailsByIdAsync(request.Id, cancellationToken);
+        var property = await _propertyRepository.GetDetailsByIdAsync(request.Id, cancellationToken);
+
         if (property is null) return Error.NotFound("Property not found.");
 
-        var filesOk = await ValidateFilesExistAsync(request.PropertyFileIds, cancellationToken);
-        if (filesOk.IsFailure) return filesOk.Error;
+        if (property.CodeInternal != request.CodeInternal && 
+            await _propertyRepository.ExistsAsync(p => p.Id != property.Id && p.CodeInternal == request.CodeInternal, cancellationToken))
+        {
+            return Error.Conflict("A property with the same internal code already exists.");
+        }
 
-        filesOk = await ValidateFilesExistAsync(request.Owner.OwnerFileIds, cancellationToken);
-        if (filesOk.IsFailure) return filesOk.Error;
+        var filesAreValid = await ValidateFilesExistAsync(
+            request.PropertyFileIds.Concat(request.Owner.OwnerFileIds).Distinct(), cancellationToken);
+
+        if (filesAreValid.IsFailure) return filesAreValid.Error;
 
         property.Name = request.Name;
         property.Address = request.Address;
@@ -37,15 +44,15 @@ public sealed class UpdatePropertyCommandHandler(
         var statusResult = property.SetStatus((PropertyStatusEnum)request.StatusId);
         if (statusResult.IsFailure) return statusResult.Error;
 
-        if (request.Price.HasValue && request.PriceDate.HasValue)
+        if (request.Price.HasValue)
         {
-            var priceResult = property.ChangePrice(request.Price.Value, request.PriceDate.Value, request.Tax!.Value);
+            var priceDate = DateTime.UtcNow;
+            var tax = request.Tax ?? 0m;
+            var priceResult = property.ChangePrice(request.Price.Value, priceDate, tax);
             if (priceResult.IsFailure) return priceResult.Error;
         }
 
-        var ownerTargetResult = await EnsureOwnerAsync(property.Owner, request.Owner, cancellationToken);
-        if (ownerTargetResult.IsFailure) return ownerTargetResult.Error;
-        var ownerTarget = ownerTargetResult.Value;
+        var ownerTarget = await EnsureOwnerAsync(property.Owner, request.Owner, cancellationToken);
 
         if (ownerTarget.Id != property.OwnerId)
         {
@@ -55,8 +62,7 @@ public sealed class UpdatePropertyCommandHandler(
         property.Images.Clear();
         foreach (var id in request.PropertyFileIds.Distinct())
         {
-            if (id == Guid.Empty) continue;
-            property.Images.Add(new Domain.Properties.PropertyImage
+            property.Images.Add(new PropertyImage
             {
                 PropertyId = property.Id,
                 FileId = id
@@ -66,8 +72,7 @@ public sealed class UpdatePropertyCommandHandler(
         ownerTarget.OwnerImages.Clear();
         foreach (var id in request.Owner.OwnerFileIds.Distinct())
         {
-            if (id == Guid.Empty) continue;
-            ownerTarget.OwnerImages.Add(new Domain.Owners.OwnerImage
+            ownerTarget.OwnerImages.Add(new OwnerImage
             {
                 OwnerId = ownerTarget.Id,
                 FileId = id
@@ -78,48 +83,49 @@ public sealed class UpdatePropertyCommandHandler(
         return Result.Success();
     }
 
-    private async Task<Result<Owner>> EnsureOwnerAsync(Owner currentOwner, OwnerUpdate input, CancellationToken ct)
+    private async Task<Owner> EnsureOwnerAsync(Owner currentOwner, OwnerUpdate ownerRequest, CancellationToken ct)
     {
-        var sameIdentification = currentOwner.IdentificationTypeId == input.IdentificationTypeId &&
-                                  string.Equals(currentOwner.IdentificationNumber, input.IdentificationNumber, StringComparison.OrdinalIgnoreCase);
+        var sameIdentification = currentOwner.IdentificationTypeId == ownerRequest.IdentificationTypeId &&
+                                  string.Equals(currentOwner.IdentificationNumber, ownerRequest.IdentificationNumber, StringComparison.OrdinalIgnoreCase);
 
         if (sameIdentification)
         {
-            currentOwner.Name = input.Name;
-            currentOwner.Address = input.Address;
-            currentOwner.BirthDate = input.BirthDate;
+            currentOwner.Name = ownerRequest.Name;
+            currentOwner.Address = ownerRequest.Address;
+            currentOwner.BirthDate = ownerRequest.BirthDate;
             return currentOwner;
         }
 
-        var existing = await _owners.GetByIdentificationAsync(input.IdentificationTypeId, input.IdentificationNumber, ct);
+        var existing = await _ownerRepository.GetByIdentificationAsync(ownerRequest.IdentificationTypeId, ownerRequest.IdentificationNumber, ct);
+
         if (existing is not null)
         {
-            existing.Name = input.Name;
-            existing.Address = input.Address;
-            existing.BirthDate = input.BirthDate;
+            existing.Name = ownerRequest.Name;
+            existing.Address = ownerRequest.Address;
+            existing.BirthDate = ownerRequest.BirthDate;
             return existing;
         }
 
         var created = new Owner
         {
-            Name = input.Name,
-            Address = input.Address,
-            BirthDate = input.BirthDate,
-            IdentificationTypeId = input.IdentificationTypeId,
-            IdentificationNumber = input.IdentificationNumber
+            Name = ownerRequest.Name,
+            Address = ownerRequest.Address,
+            BirthDate = ownerRequest.BirthDate,
+            IdentificationTypeId = ownerRequest.IdentificationTypeId,
+            IdentificationNumber = ownerRequest.IdentificationNumber
         };
 
-        _owners.Add(created);
+        _ownerRepository.Add(created);
         return created;
     }
 
     private async Task<Result> ValidateFilesExistAsync(IEnumerable<Guid> ids, CancellationToken ct)
     {
-        var distinct = ids?.Where(id => id != Guid.Empty).Distinct().ToList() ?? new List<Guid>();
-        if (distinct.Count == 0) return Result.Success();
+        var fileIdsToValidate = ids?.Where(id => id != Guid.Empty).ToList() ?? new List<Guid>();
+        if (fileIdsToValidate.Count == 0) return Result.Success();
 
-        var existsCount = await _files.CountAsync(f => distinct.Contains(f.Id), ct);
-        if (existsCount != distinct.Count)
+        var existsCount = await _fileRepository.CountAsync(file => fileIdsToValidate.Contains(file.Id), ct);
+        if (existsCount != fileIdsToValidate.Count)
             return Error.NotFound("One or more files were not found.");
 
         return Result.Success();
