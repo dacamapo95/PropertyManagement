@@ -23,9 +23,11 @@ public sealed class CreatePropertyCommandHandler(
         if (ownerResult.IsFailure) return ownerResult.Error;
         var owner = ownerResult.Value;
 
+        // Validate that all property file ids exist
         var filesOk = await ValidateFilesExistAsync(request.PropertyFileIds, cancellationToken);
         if (filesOk.IsFailure) return filesOk.Error;
 
+        // Validate that all owner file ids exist
         filesOk = await ValidateFilesExistAsync(request.Owner.OwnerFileIds, cancellationToken);
         if (filesOk.IsFailure) return filesOk.Error;
 
@@ -52,6 +54,7 @@ public sealed class CreatePropertyCommandHandler(
         var owner = await _ownerRepository.GetByIdentificationAsync(input.IdentificationTypeId, input.IdentificationNumber, ct);
         if (owner is not null)
         {
+            // Optionally update basic data
             owner.Name = input.Name;
             owner.Address = input.Address;
             owner.BirthDate = input.BirthDate;

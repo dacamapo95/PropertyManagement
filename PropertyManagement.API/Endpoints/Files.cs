@@ -1,8 +1,6 @@
 using Carter;
 using MediatR;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Antiforgery;
 using PropertyManagement.API.Extensions;
 using PropertyManagement.Application.Features.Files.Create;
 using PropertyManagement.Application.Features.Files.Delete;

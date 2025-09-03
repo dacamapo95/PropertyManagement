@@ -8,7 +8,7 @@ public sealed class PropertyRepository(ApplicationDbContext context)
 {
     public async Task<Property?> GetDetailsByIdAsync(Guid id, CancellationToken cancellationToken = default)
     {
-        return await _context.Set<Property>()
+        return await Query
             .Include(p => p.Status)
             .Include(p => p.Country)
             .Include(p => p.State)
