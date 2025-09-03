@@ -60,6 +60,11 @@ public class Repository<TEntity, TId>(
         return await ConfigureQuery(filter).AnyAsync(filter, cancellationToken);
     }
 
+    public async Task<TEntity?> Find(Expression<Func<TEntity, bool>> filter, CancellationToken cancellationToken = default)
+    {
+        return await ConfigureQuery(filter).FirstOrDefaultAsync(cancellationToken);
+    }
+
     public async Task<int> CountAsync(Expression<Func<TEntity, bool>>? filter = null, CancellationToken cancellationToken = default)
     { 
         return await ConfigureQuery(filter).CountAsync(cancellationToken);

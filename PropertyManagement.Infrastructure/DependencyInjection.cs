@@ -71,10 +71,16 @@ public static class DependencyInjection
                 sp.GetRequiredService<IMemoryCache>(),
                 sp.GetRequiredService<IOptions<CacheOptions>>()));
 
-        // New repositories
+        // Master data repositories
         services.AddScoped<IIdentificationTypeRepository, IdentificationTypeRepository>();
         services.AddScoped<IPropertyStatusRepository, PropertyStatusRepository>();
+
+        // Files repository
         services.AddScoped<IFileRepository, FileRepository>();
+
+        // Properties and Owners
+        services.AddScoped<IPropertyRepository, PropertyRepository>();
+        services.AddScoped<IOwnerRepository, OwnerRepository>();
 
         return services;
     }

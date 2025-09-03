@@ -8,7 +8,13 @@ public sealed class OwnerImageConfiguration : IEntityTypeConfiguration<OwnerImag
 {
     public void Configure(EntityTypeBuilder<OwnerImage> builder)
     {
+        builder.ToTable("OwnerImages");
+
+        // Composite key
         builder.HasKey(x => new { x.OwnerId, x.FileId });
+
+        builder.Property(x => x.OwnerId).IsRequired();
+        builder.Property(x => x.FileId).IsRequired();
 
         builder.HasOne(x => x.Owner)
                .WithMany(o => o.OwnerImages)
@@ -16,7 +22,7 @@ public sealed class OwnerImageConfiguration : IEntityTypeConfiguration<OwnerImag
                .OnDelete(DeleteBehavior.Cascade);
 
         builder.HasOne(x => x.File)
-               .WithMany()
+               .WithMany(f => f.OwnerImages)
                .HasForeignKey(x => x.FileId)
                .OnDelete(DeleteBehavior.Cascade);
     }

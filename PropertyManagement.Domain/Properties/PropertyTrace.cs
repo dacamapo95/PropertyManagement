@@ -11,7 +11,7 @@ public sealed class PropertyTrace : AuditableEntity<Guid>
     public decimal Value { get; set; }
     public decimal Tax { get; set; }
 
-    public static PropertyTrace Create(Guid propertyId, string name, decimal value, decimal tax, DateOnly dateSale, string createdBy)
+    public static PropertyTrace Create(Guid propertyId, string name, decimal value, decimal tax, DateOnly dateSale)
     {
         return new PropertyTrace
         {
@@ -21,8 +21,6 @@ public sealed class PropertyTrace : AuditableEntity<Guid>
             Value = value,
             Tax = tax,
             DateSale = dateSale,
-            CreatedAtUtc = DateTime.UtcNow,
-            CreatedBy = createdBy
         };
     }
 }

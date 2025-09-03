@@ -12,11 +12,10 @@ public sealed class DeleteFileCommandHandler(IFileRepository repo, IUnitOfWork u
 
     public async Task<Result<bool>> Handle(DeleteFileCommand request, CancellationToken cancellationToken)
     {
-        var entity = await _repo.GetByIdAsync(request.FileId, cancellationToken);
-        if (entity is null)
-            return Result.Fail<bool>(Error.NotFound("File not found."));
+        var file = await _repo.GetByIdAsync(request.FileId, cancellationToken);
+        if (file is null) return Error.NotFound("File not found.");
 
-        _repo.Remove(entity);
+        _repo.Remove(file);
         await _uow.SaveChangesAsync(cancellationToken);
         return true;
     }

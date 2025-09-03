@@ -2,6 +2,7 @@ using Carter;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Antiforgery;
 using PropertyManagement.API.Extensions;
 using PropertyManagement.Application.Features.Files.Create;
 using PropertyManagement.Application.Features.Files.Delete;
@@ -20,10 +21,11 @@ public sealed class Files : ICarterModule
             if (file is null) return Results.BadRequest("File is required.");
             await using var ms = new MemoryStream();
             await file.CopyToAsync(ms, ct);
-            var cmd = new CreateFileCommand(file.FileName, file.ContentType, ms.ToArray());
-            var result = await sender.Send(cmd, ct);
-            return result.IsValid ? Results.Created($"/api/files/{result.Value}", new { id = result.Value }) : ResultExtension.ResultToResponse(result);
+            var result = await sender.Send(new CreateFileCommand(file.FileName, file.ContentType, ms.ToArray()), ct);
+            return result.IsValid ? Results.CreatedAtRoute("DeleteFile",
+                 new { id = result.Value }) : ResultExtension.ResultToResponse(result);
         })
+        .DisableAntiforgery()
         .Accepts<IFormFile>("multipart/form-data")
         .Produces(StatusCodes.Status201Created)
         .ProducesProblem(StatusCodes.Status400BadRequest);
@@ -34,7 +36,8 @@ public sealed class Files : ICarterModule
             return result.IsValid ? Results.Ok(result.Value) : ResultExtension.ResultToResponse(result);
         })
         .Produces<FileResponse>(StatusCodes.Status200OK)
-        .ProducesProblem(StatusCodes.Status404NotFound);
+        .ProducesProblem(StatusCodes.Status404NotFound)
+        .WithName("DeleteFile");
 
         group.MapDelete("/{id:guid}", async (Guid id, ISender sender, CancellationToken ct) =>
         {
