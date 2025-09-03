@@ -13,6 +13,6 @@ public sealed class CityConfiguration : IEntityTypeConfiguration<City>
         builder.HasOne(x => x.State)
                .WithMany(s => s.Cities)
                .HasForeignKey(x => x.StateId)
-               .OnDelete(DeleteBehavior.Cascade);
+               .OnDelete(DeleteBehavior.Restrict);
     }
 }

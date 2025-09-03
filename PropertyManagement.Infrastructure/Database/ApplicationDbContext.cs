@@ -34,16 +34,15 @@ public class ApplicationDbContext
     public DbSet<OwnerImage> OwnerImages => Set<OwnerImage>();
     public DbSet<IdentificationType> IdentificationTypes => Set<IdentificationType>();
 
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-    {
-        base.OnConfiguring(optionsBuilder);
-    }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
         builder.HasDefaultSchema("PTY");
+ 
         base.OnModelCreating(builder);
+
         builder.ApplyConfigurationsFromAssembly(AssemblyReference.Assembly);
+
         UsersConfiguration.ConfigureUsersContraints(builder);
     }
 

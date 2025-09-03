@@ -35,7 +35,7 @@ public sealed class CreatePropertyCommandHandler(
         var statusResult = ApplyStatus(property, request.StatusId);
         if (statusResult.IsFailure) return statusResult.Error;
 
-        var priceResult = ApplyInitialPrice(property, request.Price, request.Tax);
+        var priceResult = ApplyInitialPrice(property, request.Price);
         if (priceResult.IsFailure) return priceResult.Error;
 
         AttachPropertyImages(property, request.PropertyFileIds);
@@ -100,14 +100,16 @@ public sealed class CreatePropertyCommandHandler(
 
     private static Result ApplyStatus(Property property, int statusId)
     {
+        if ((PropertyStatusEnum)statusId == PropertyStatusEnum.Sold)
+            return Error.Validation("Cannot create a property with Sold status.");
+
         var result = property.SetStatus((PropertyStatusEnum)statusId);
         return result.IsFailure ? result.Error : Result.Success();
     }
 
-    private static Result ApplyInitialPrice(Property property, decimal price, decimal tax)
+    private static Result ApplyInitialPrice(Property property, decimal price)
     {
-        var result = property.ChangePrice(price, DateOnly.FromDateTime(DateTime.UtcNow), tax);
-        return result.IsFailure ? result.Error : Result.Success();
+        return property.SetInitialPrice(price);
     }
 
     private static void AttachPropertyImages(Property property, IEnumerable<Guid> fileIds)

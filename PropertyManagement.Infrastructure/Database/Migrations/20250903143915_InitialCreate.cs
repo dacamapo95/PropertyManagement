@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace PropertyManagement.Infrastructure.Migrations
+namespace PropertyManagement.Infrastructure.Database.Migrations
 {
     /// <inheritdoc />
     public partial class InitialCreate : Migration
@@ -146,7 +146,7 @@ namespace PropertyManagement.Infrastructure.Migrations
                         principalSchema: "PTY",
                         principalTable: "Countries",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -303,7 +303,6 @@ namespace PropertyManagement.Infrastructure.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    CountryId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     StateId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false)
                 },
@@ -311,19 +310,12 @@ namespace PropertyManagement.Infrastructure.Migrations
                 {
                     table.PrimaryKey("PK_Cities", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Cities_Countries_CountryId",
-                        column: x => x.CountryId,
-                        principalSchema: "PTY",
-                        principalTable: "Countries",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
                         name: "FK_Cities_States_StateId",
                         column: x => x.StateId,
                         principalSchema: "PTY",
                         principalTable: "States",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -365,8 +357,6 @@ namespace PropertyManagement.Infrastructure.Migrations
                     CodeInternal = table.Column<int>(type: "int", nullable: false),
                     Year = table.Column<int>(type: "int", nullable: false),
                     StatusId = table.Column<int>(type: "int", nullable: false),
-                    CountryId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    StateId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     CityId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     OwnerId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     CreatedAtUtc = table.Column<DateTime>(type: "datetime2", nullable: false),
@@ -385,13 +375,6 @@ namespace PropertyManagement.Infrastructure.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_Properties_Countries_CountryId",
-                        column: x => x.CountryId,
-                        principalSchema: "PTY",
-                        principalTable: "Countries",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
                         name: "FK_Properties_Owners_OwnerId",
                         column: x => x.OwnerId,
                         principalSchema: "PTY",
@@ -403,13 +386,6 @@ namespace PropertyManagement.Infrastructure.Migrations
                         column: x => x.StatusId,
                         principalSchema: "PTY",
                         principalTable: "PropertyStatuses",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Properties_States_StateId",
-                        column: x => x.StateId,
-                        principalSchema: "PTY",
-                        principalTable: "States",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
@@ -470,12 +446,6 @@ namespace PropertyManagement.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Cities_CountryId",
-                schema: "PTY",
-                table: "Cities",
-                column: "CountryId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Cities_StateId",
                 schema: "PTY",
                 table: "Cities",
@@ -508,12 +478,6 @@ namespace PropertyManagement.Infrastructure.Migrations
                 column: "CityId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Properties_CountryId_StateId_CityId",
-                schema: "PTY",
-                table: "Properties",
-                columns: new[] { "CountryId", "StateId", "CityId" });
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Properties_OwnerId",
                 schema: "PTY",
                 table: "Properties",
@@ -524,12 +488,6 @@ namespace PropertyManagement.Infrastructure.Migrations
                 schema: "PTY",
                 table: "Properties",
                 column: "Price");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Properties_StateId",
-                schema: "PTY",
-                table: "Properties",
-                column: "StateId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Properties_StatusId",

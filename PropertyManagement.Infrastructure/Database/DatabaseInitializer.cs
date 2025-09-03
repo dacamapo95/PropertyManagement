@@ -39,7 +39,8 @@ public sealed class DatabaseInitializer(UserManager<User> userManager, RoleManag
 
         _logger.LogInformation("Seeding default user {Email} if needed...", email);
 
-        var user = await _db.Users.FirstOrDefaultAsync(u => u.Email == email, cancellationToken);
+        var user = await _userManager.FindByEmailAsync(email);
+
         if (user is not null)
         {
             _logger.LogInformation("Default user {Email} already exists.", email);

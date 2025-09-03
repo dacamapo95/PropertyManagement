@@ -13,11 +13,11 @@ public sealed class StateConfiguration : IEntityTypeConfiguration<State>
         builder.HasOne(x => x.Country)
                .WithMany(c => c.States)
                .HasForeignKey(x => x.CountryId)
-               .OnDelete(DeleteBehavior.Cascade);
+               .OnDelete(DeleteBehavior.Restrict);
 
         builder.HasMany(x => x.Cities)
                .WithOne(c => c.State)
                .HasForeignKey(c => c.StateId)
-               .OnDelete(DeleteBehavior.Cascade);
+               .OnDelete(DeleteBehavior.Restrict);
     }
 }

@@ -8,6 +8,9 @@ public sealed class IdentificationTypeConfiguration : IEntityTypeConfiguration<I
 {
     public void Configure(EntityTypeBuilder<IdentificationType> builder)
     {
+        builder.Property(x => x.Id)
+       .ValueGeneratedNever();
+
         builder.Property(x => x.Name)
                .IsRequired()
                .HasMaxLength(100);

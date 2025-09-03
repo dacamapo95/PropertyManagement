@@ -52,7 +52,7 @@ public sealed class Properties : ICarterModule
 
         group.MapPost("", async ([FromBody] CreatePropertyRequest req, ISender sender, CancellationToken ct) =>
         {
-            var ownerInput = new PropertyManagement.Application.Features.Properties.Create.OwnerCommand(
+            var ownerInput = new OwnerCommand(
                 req.Owner.IdentificationTypeId, req.Owner.IdentificationNumber, req.Owner.Name, req.Owner.Address, req.Owner.BirthDate, req.Owner.OwnerFileIds);
 
             var cmd = new CreatePropertyCommand(

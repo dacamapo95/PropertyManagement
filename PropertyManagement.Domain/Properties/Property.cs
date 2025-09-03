@@ -38,6 +38,15 @@ public sealed class Property : AuditableEntity<Guid>
         return Result.Success();
     }
 
+    public Result SetInitialPrice(decimal initialPrice)
+    {
+        if (initialPrice <= 0)
+            return Error.Validation("Price must be greater than zero.");
+
+        Price = initialPrice;
+        return Result.Success();
+    }
+
     public Result SetStatus(PropertyStatusEnum newStatus)
     {
         if ((PropertyStatusEnum)StatusId == PropertyStatusEnum.Sold && newStatus != PropertyStatusEnum.Sold)

@@ -8,6 +8,8 @@ public sealed class PropertyStatusConfiguration : IEntityTypeConfiguration<Prope
 {
     public void Configure(EntityTypeBuilder<PropertyStatus> builder)
     {
+        builder.Property(x => x.Id)
+       .ValueGeneratedNever();
         builder.Property(x => x.Name)
                .IsRequired()
                .HasMaxLength(100);

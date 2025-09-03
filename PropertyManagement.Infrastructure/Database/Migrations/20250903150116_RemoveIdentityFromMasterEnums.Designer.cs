@@ -8,11 +8,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace PropertyManagement.Infrastructure.Migrations
+namespace PropertyManagement.Infrastructure.Database.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250903125729_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20250903150116_RemoveIdentityFromMasterEnums")]
+    partial class RemoveIdentityFromMasterEnums
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -79,9 +79,6 @@ namespace PropertyManagement.Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("CountryId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(200)
@@ -91,8 +88,6 @@ namespace PropertyManagement.Infrastructure.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("CountryId");
 
                     b.HasIndex("StateId");
 
@@ -216,10 +211,7 @@ namespace PropertyManagement.Infrastructure.Migrations
             modelBuilder.Entity("PropertyManagement.Domain.Owners.IdentificationType", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -309,9 +301,6 @@ namespace PropertyManagement.Infrastructure.Migrations
                     b.Property<int>("CodeInternal")
                         .HasColumnType("int");
 
-                    b.Property<Guid>("CountryId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<DateTime>("CreatedAtUtc")
                         .HasColumnType("datetime2");
 
@@ -335,9 +324,6 @@ namespace PropertyManagement.Infrastructure.Migrations
                     b.Property<decimal>("Price")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<Guid>("StateId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<int>("StatusId")
                         .HasColumnType("int");
 
@@ -352,11 +338,7 @@ namespace PropertyManagement.Infrastructure.Migrations
 
                     b.HasIndex("Price");
 
-                    b.HasIndex("StateId");
-
                     b.HasIndex("StatusId");
-
-                    b.HasIndex("CountryId", "StateId", "CityId");
 
                     b.ToTable("Properties", "PTY");
                 });
@@ -379,10 +361,7 @@ namespace PropertyManagement.Infrastructure.Migrations
             modelBuilder.Entity("PropertyManagement.Domain.Properties.PropertyStatus", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -614,19 +593,11 @@ namespace PropertyManagement.Infrastructure.Migrations
 
             modelBuilder.Entity("PropertyManagement.Domain.Countries.City", b =>
                 {
-                    b.HasOne("PropertyManagement.Domain.Countries.Country", "Country")
-                        .WithMany("Cities")
-                        .HasForeignKey("CountryId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("PropertyManagement.Domain.Countries.State", "State")
                         .WithMany("Cities")
                         .HasForeignKey("StateId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
-
-                    b.Navigation("Country");
 
                     b.Navigation("State");
                 });
@@ -636,7 +607,7 @@ namespace PropertyManagement.Infrastructure.Migrations
                     b.HasOne("PropertyManagement.Domain.Countries.Country", "Country")
                         .WithMany("States")
                         .HasForeignKey("CountryId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Country");
@@ -680,21 +651,9 @@ namespace PropertyManagement.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("PropertyManagement.Domain.Countries.Country", "Country")
-                        .WithMany("Properties")
-                        .HasForeignKey("CountryId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
                     b.HasOne("PropertyManagement.Domain.Owners.Owner", "Owner")
                         .WithMany("Properties")
                         .HasForeignKey("OwnerId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("PropertyManagement.Domain.Countries.State", "State")
-                        .WithMany("Properties")
-                        .HasForeignKey("StateId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
@@ -706,11 +665,7 @@ namespace PropertyManagement.Infrastructure.Migrations
 
                     b.Navigation("City");
 
-                    b.Navigation("Country");
-
                     b.Navigation("Owner");
-
-                    b.Navigation("State");
 
                     b.Navigation("Status");
                 });
@@ -793,18 +748,12 @@ namespace PropertyManagement.Infrastructure.Migrations
 
             modelBuilder.Entity("PropertyManagement.Domain.Countries.Country", b =>
                 {
-                    b.Navigation("Cities");
-
-                    b.Navigation("Properties");
-
                     b.Navigation("States");
                 });
 
             modelBuilder.Entity("PropertyManagement.Domain.Countries.State", b =>
                 {
                     b.Navigation("Cities");
-
-                    b.Navigation("Properties");
                 });
 
             modelBuilder.Entity("PropertyManagement.Domain.Files.File", b =>

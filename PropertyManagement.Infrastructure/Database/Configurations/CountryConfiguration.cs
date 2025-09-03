@@ -16,6 +16,6 @@ public sealed class CountryConfiguration : IEntityTypeConfiguration<Country>
         builder.HasMany(x => x.States)
                .WithOne(d => d.Country)
                .HasForeignKey(d => d.CountryId)
-               .OnDelete(DeleteBehavior.Cascade);
+               .OnDelete(DeleteBehavior.Restrict);
     }
 }

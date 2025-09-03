@@ -17,8 +17,10 @@ public sealed class CreatePropertyCommandValidator : AbstractValidator<CreatePro
         RuleFor(x => x.Price)
             .GreaterThan(0).WithMessage("Price must be greater than 0.");
 
+        // Tax is not required on create; if provided, must be >= 0
         RuleFor(x => x.Tax)
-            .GreaterThanOrEqualTo(0).WithMessage("Tax must be greater than or equal to 0.");
+            .GreaterThanOrEqualTo(0).When(x => x.Tax.HasValue)
+            .WithMessage("Tax must be greater than or equal to 0.");
 
         RuleFor(x => x.CodeInternal)
             .GreaterThan(0).WithMessage("Internal code must be greater than 0.");
@@ -28,7 +30,8 @@ public sealed class CreatePropertyCommandValidator : AbstractValidator<CreatePro
             .WithMessage("Year must be between 1800 and current year + 1.");
 
         RuleFor(x => x.StatusId)
-            .GreaterThan(0).WithMessage("Status is invalid.");
+            .GreaterThan(0).WithMessage("Status is invalid.")
+            .NotEqual((int)Domain.Properties.PropertyStatusEnum.Sold).WithMessage("Cannot create a property with Sold status.");
 
         RuleFor(x => x.CityId)
             .NotEmpty().WithMessage("City is required.");
