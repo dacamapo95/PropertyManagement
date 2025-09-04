@@ -27,9 +27,18 @@ public sealed class DatabaseInitializer(UserManager<User> userManager, RoleManag
 
     private async Task EnsureDatabaseCreatedAsync(CancellationToken cancellationToken)
     {
-        _logger.LogInformation("Applying database migrations...");
-        await _db.Database.MigrateAsync(cancellationToken);
-        _logger.LogInformation("Database migrations applied.");
+        try
+        {
+            _logger.LogInformation("Applying database migrations...");
+            await _db.Database.MigrateAsync(cancellationToken);
+            _logger.LogInformation("Database migrations applied.");
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "An error occurred while applying database migrations.");
+            throw;
+        }
+        
     }
 
     private async Task SeedDefaultUserAsync(CancellationToken cancellationToken)
