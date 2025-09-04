@@ -10,7 +10,7 @@ public sealed class MasterData : ICarterModule
 {
     public void AddRoutes(IEndpointRouteBuilder app)
     {
-        var group = app.MapGroup("/api/master").WithTags("Master");
+        var group = app.MapGroup("/api/master").WithTags("Master").RequireAuthorization();
 
         group.MapGet("/identification-types", async (ISender sender) =>
         {

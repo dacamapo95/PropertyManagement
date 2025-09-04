@@ -1,4 +1,5 @@
 using Carter;
+using PropertyManagement.API.Infrastructure;
 using Serilog;
 
 namespace PropertyManagement.API.Extensions;
@@ -7,13 +8,13 @@ public static class WebApplicationExtensions
 {
     public static WebApplication UsePipeline(this WebApplication app)
     {
-        // Serilog request logging
-        app.UseSerilogRequestLogging();
-
         app.UseExceptionHandler();
+        app.UseSerilogRequestLogging();
+        app.UseHttpsRedirection();
         app.UseSwagger();
         app.UseSwaggerUI();
-        app.UseHttpsRedirection();
+        app.UseAuthentication();
+        app.UseAuthorization();
         app.MapCarter();
 
         return app;

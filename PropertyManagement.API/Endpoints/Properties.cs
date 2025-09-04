@@ -15,7 +15,7 @@ public sealed class Properties : ICarterModule
 {
     public void AddRoutes(IEndpointRouteBuilder app)
     {
-        var group = app.MapGroup("/api/properties").WithTags("Properties");
+        var group = app.MapGroup("/api/properties").WithTags("Properties").RequireAuthorization();
 
         group.MapGet("", async (
             [FromQuery] int pageNumber,

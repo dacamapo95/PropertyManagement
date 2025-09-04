@@ -34,6 +34,7 @@ public static class DependencyInjection
                    });
         });
 
+        services.AddHttpContextAccessor();
         services.AddScoped<ISaveChangesInterceptor, AuditableEntitySaveChangesInterceptor>();
 
         services.AddScoped<IUnitOfWork>(sp =>

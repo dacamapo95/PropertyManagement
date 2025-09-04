@@ -12,7 +12,7 @@ public sealed class Files : ICarterModule
 {
     public void AddRoutes(IEndpointRouteBuilder app)
     {
-        var group = app.MapGroup("/api/files").WithTags("Files");
+        var group = app.MapGroup("/api/files").WithTags("Files").RequireAuthorization();
 
         group.MapPost("", async ([FromForm] IFormFile file, ISender sender, CancellationToken ct) =>
         {

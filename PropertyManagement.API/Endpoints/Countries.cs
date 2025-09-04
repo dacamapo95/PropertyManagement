@@ -11,7 +11,7 @@ public sealed class Countries : ICarterModule
 {
     public void AddRoutes(IEndpointRouteBuilder app)
     {
-        var group =  app.MapGroup("/api/countries").WithTags("Countries");
+        var group =  app.MapGroup("/api/countries").WithTags("Countries").RequireAuthorization();
 
         group.MapGet("", async (ISender sender) =>
         {

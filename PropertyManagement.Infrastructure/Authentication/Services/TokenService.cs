@@ -20,7 +20,11 @@ public sealed class TokenService : ITokenService
         {
             new(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
             new(JwtRegisteredClaimNames.UniqueName, user.UserName ?? user.Email ?? string.Empty),
-            new(JwtRegisteredClaimNames.Email, user.Email ?? string.Empty)
+            new(JwtRegisteredClaimNames.Email, user.Email ?? string.Empty),
+            // Add standard claims for easier access in the audit interceptor
+            new(ClaimTypes.NameIdentifier, user.Id.ToString()),
+            new(ClaimTypes.Name, user.UserName ?? user.Email ?? string.Empty),
+            new(ClaimTypes.Email, user.Email ?? string.Empty)
         };
 
         var descriptor = new SecurityTokenDescriptor
