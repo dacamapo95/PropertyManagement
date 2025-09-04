@@ -6,6 +6,5 @@ public sealed record AuthResponse(
     string? UserName,
     string AccessToken,
     DateTime AccessTokenExpiresAtUtc,
-    string RefreshToken,
-    DateTime RefreshTokenExpiresAtUtc
+    string RefreshToken
 );

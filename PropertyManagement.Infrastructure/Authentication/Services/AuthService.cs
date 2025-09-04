@@ -17,7 +17,7 @@ public sealed class AuthService(
 {
     private readonly UserManager<User> _userManager = userManager;
     private readonly ITokenService _tokenService = tokenService;
-    private readonly ApplicationDbContext _db = db;
+    private readonly ApplicationDbContext _context = db;
     private readonly JwtOptions _jwt = jwtOptions.Value;
 
     public async Task<Result<AuthResponse>> LoginAsync(string email, string password, CancellationToken ct = default)
@@ -37,7 +37,7 @@ public sealed class AuthService(
             return Error.Validation("Password is required");
         }
 
-        var user = await _userManager.Users.Include(u => u.Tokens).FirstOrDefaultAsync(u => u.Email == email, ct);
+        var user = await _context.Users.Include(u => u.Tokens).FirstOrDefaultAsync(u => u.Email == email, ct);
         if (user is null)
         {
             return UserErrors.UnAuthorized;
@@ -54,9 +54,9 @@ public sealed class AuthService(
         var (refreshToken, refreshExp) = _tokenService.CreateRefreshToken(_jwt);
 
         user.SetRefreshToken(refreshToken, refreshExp);
-        await _db.SaveChangesAsync(ct);
+        await _context.SaveChangesAsync(ct);
 
-        return new AuthResponse(user.Id, user.Email!, user.UserName, accessToken, accessExp, refreshToken, refreshExp);
+        return new AuthResponse(user.Id, user.Email!, user.UserName, accessToken, accessExp, refreshToken);
        
     }
 
@@ -79,9 +79,9 @@ public sealed class AuthService(
         var (newRefresh, refreshExp) = _tokenService.CreateRefreshToken(_jwt);
 
         user.SetRefreshToken(newRefresh, refreshExp);
-        await _db.SaveChangesAsync(ct);
+        await _context.SaveChangesAsync(ct);
 
-        var response = new AuthResponse(user.Id, user.Email!, user.UserName, accessToken, accessExp, newRefresh, refreshExp);
+        var response = new AuthResponse(user.Id, user.Email!, user.UserName, accessToken, accessExp, newRefresh);
         return Result.Success(response);
     }
 }
