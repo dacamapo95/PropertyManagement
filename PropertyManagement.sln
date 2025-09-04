@@ -22,6 +22,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PropertyManagement.Infrastr
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PropertyManagement.Shared", "PropertyManagement.Shared\PropertyManagement.Shared.csproj", "{12DE53F7-0756-AB6D-DF30-8BA781EFE638}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{E7C17FB8-082B-4379-BD30-1DDA3E47FBE3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PropertyManagement.Tests", "PropertyManagement.Tests\PropertyManagement.Tests.csproj", "{099335D9-DE56-A72D-D1D1-C9A871C1C842}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -48,6 +52,10 @@ Global
 		{12DE53F7-0756-AB6D-DF30-8BA781EFE638}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{12DE53F7-0756-AB6D-DF30-8BA781EFE638}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{12DE53F7-0756-AB6D-DF30-8BA781EFE638}.Release|Any CPU.Build.0 = Release|Any CPU
+		{099335D9-DE56-A72D-D1D1-C9A871C1C842}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{099335D9-DE56-A72D-D1D1-C9A871C1C842}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{099335D9-DE56-A72D-D1D1-C9A871C1C842}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{099335D9-DE56-A72D-D1D1-C9A871C1C842}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -58,6 +66,7 @@ Global
 		{19757712-514C-4B03-A7B9-2A5BF8427A6B} = {4B1FC4B3-17CB-4CB3-BD8D-5E8148DAA73F}
 		{C2D13E82-0A62-4624-8D38-715C87321F2D} = {4B1FC4B3-17CB-4CB3-BD8D-5E8148DAA73F}
 		{12DE53F7-0756-AB6D-DF30-8BA781EFE638} = {4B1FC4B3-17CB-4CB3-BD8D-5E8148DAA73F}
+		{099335D9-DE56-A72D-D1D1-C9A871C1C842} = {E7C17FB8-082B-4379-BD30-1DDA3E47FBE3}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {5B116360-9713-4D5E-A954-7E7EAD13CD2C}

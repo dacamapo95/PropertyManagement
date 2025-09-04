@@ -1,0 +1,25 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <IsPackable>false</IsPackable>
+    <IsTestProject>true</IsTestProject>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" />
+    <PackageReference Include="NUnit" />
+    <PackageReference Include="NUnit3TestAdapter" />
+    <PackageReference Include="NUnit.Analyzers" />
+    <PackageReference Include="coverlet.collector" />
+    <PackageReference Include="NSubstitute" />
+    <PackageReference Include="FluentAssertions" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\PropertyManagement.Application\PropertyManagement.Application.csproj" />
+    <ProjectReference Include="..\PropertyManagement.Infrastructure\PropertyManagement.Infrastructure.csproj" />
+    <ProjectReference Include="..\PropertyManagement.Domain\PropertyManagement.Domain.csproj" />
+    <ProjectReference Include="..\PropertyManagement.Shared\PropertyManagement.Shared.csproj" />
+  </ItemGroup>
+
+</Project>
