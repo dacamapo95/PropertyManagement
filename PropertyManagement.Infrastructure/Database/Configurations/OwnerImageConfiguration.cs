@@ -10,7 +10,6 @@ public sealed class OwnerImageConfiguration : IEntityTypeConfiguration<OwnerImag
     {
         builder.ToTable("OwnerImages");
 
-        // Composite key
         builder.HasKey(x => new { x.OwnerId, x.FileId });
 
         builder.Property(x => x.OwnerId).IsRequired();

@@ -10,7 +10,6 @@ public sealed class PropertyImageConfiguration : IEntityTypeConfiguration<Proper
     {
         builder.ToTable("PropertyImages");
 
-        // Composite key
         builder.HasKey(x => new { x.PropertyId, x.FileId });
 
         builder.Property(x => x.PropertyId).IsRequired();

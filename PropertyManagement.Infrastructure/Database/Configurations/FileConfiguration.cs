@@ -30,8 +30,6 @@ public sealed class FileConfiguration : IEntityTypeConfiguration<DomainFile>
         builder.Property(x => x.Url)
                .HasMaxLength(1024);
 
-        // Provider-specific binary column
-        var provider = builder.Metadata.Model.GetProductVersion();
         builder.Property(x => x.Content)
                .HasColumnType("varbinary(max)");
 

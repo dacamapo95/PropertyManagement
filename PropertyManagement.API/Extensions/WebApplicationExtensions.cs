@@ -1,5 +1,4 @@
 using Carter;
-using PropertyManagement.API.Infrastructure;
 using Serilog;
 
 namespace PropertyManagement.API.Extensions;
