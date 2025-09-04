@@ -15,7 +15,10 @@ public sealed class Properties : ICarterModule
 {
     public void AddRoutes(IEndpointRouteBuilder app)
     {
-        var group = app.MapGroup("/api/properties").WithTags("Properties").RequireAuthorization();
+        var group = app.MapGroup("/api/properties")
+            .WithTags("Properties")
+            .RequireAuthorization()
+            .WithOpenApi();
 
         group.MapGet("", async (
             [FromQuery] int pageNumber,
@@ -40,6 +43,8 @@ public sealed class Properties : ICarterModule
             var result = await sender.Send(query, ct);
             return result.IsValid ? Results.Ok(result.Value) : ResultExtension.ResultToResponse(result);
         })
+        .WithSummary("Obtener lista paginada de propiedades")
+        .WithDescription("Consulta propiedades con paginación, filtros por nombre/dirección, estado, ciudad y ordenamiento personalizable. Ideal para listados y búsquedas.")
         .Produces<PagedResult<PropertyListItem>>(StatusCodes.Status200OK)
         .ProducesProblem(StatusCodes.Status400BadRequest);
 
@@ -51,6 +56,8 @@ public sealed class Properties : ICarterModule
                 "GetProperty", 
                 new { result.Value.Id}) : ResultExtension.ResultToResponse(result);
         })
+        .WithSummary("Crear nueva propiedad")
+        .WithDescription("Registra una nueva propiedad en el sistema incluyendo datos del propietario, precio, ubicación y archivos asociados. El propietario se crea o actualiza automáticamente.")
         .Produces<CreatePropertyResponse>(StatusCodes.Status201Created)
         .ProducesProblem(StatusCodes.Status400BadRequest)
         .ProducesProblem(StatusCodes.Status404NotFound);
@@ -60,6 +67,8 @@ public sealed class Properties : ICarterModule
             var result = await sender.Send(new GetPropertyByIdQuery(id), ct);
             return result.IsValid ? Results.Ok(result.Value) : ResultExtension.ResultToResponse(result);
         })
+        .WithSummary("Obtener propiedad por ID")
+        .WithDescription("Consulta los detalles completos de una propiedad específica incluyendo información del propietario, ciudad, estado e imágenes asociadas.")
         .Produces<PropertyResponse>(StatusCodes.Status200OK)
         .ProducesProblem(StatusCodes.Status404NotFound)
         .WithName("GetProperty");
@@ -70,6 +79,8 @@ public sealed class Properties : ICarterModule
             var result = await sender.Send(command, ct);
             return result.IsValid ? Results.NoContent() : ResultExtension.ResultToResponse(result);
         })
+        .WithSummary("Actualizar propiedad existente")
+        .WithDescription("Modifica los datos de una propiedad incluyendo precio (con auditoría automática), información del propietario y archivos. Actualiza fecha de modificación automáticamente.")
         .Produces(StatusCodes.Status204NoContent)
         .ProducesProblem(StatusCodes.Status400BadRequest)
         .ProducesProblem(StatusCodes.Status404NotFound);
