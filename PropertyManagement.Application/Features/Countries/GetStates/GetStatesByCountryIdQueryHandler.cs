@@ -14,13 +14,11 @@ public sealed class GetStatesByCountryIdQueryHandler(IStateRepository repo)
         _repo.DisableTracking();
         var states = await _repo.GetByCountryIdAsync(request.CountryId, cancellationToken);
 
-        var list = states.Select(s => new StateResponse(s.Id, s.Name, s.Code, s.CountryId))
-            .OrderBy(s => s.Name)
-            .ToList();
-
-        if (list.Count == 0)
+        if (states.Count == 0)
             return CountryErrors.StatesNotFound(request.CountryId);
 
-        return list;
+        return states.Select(s => new StateResponse(s.Id, s.Name, s.Code, s.CountryId))
+            .OrderBy(s => s.Name)
+            .ToList();
     }
 }

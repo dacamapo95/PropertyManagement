@@ -4,24 +4,22 @@ using PropertyManagement.Shared.Results;
 
 namespace PropertyManagement.Application.Features.Countries.GetCities;
 
-public sealed class GetCitiesByStateIdQueryHandler(ICityRepository repo)
+public sealed class GetCitiesByStateIdQueryHandler(ICityRepository cityRepository)
     : IQueryHandler<GetCitiesByStateIdQuery, IReadOnlyList<CityResponse>>
 {
-    private readonly ICityRepository _repo = repo;
+    private readonly ICityRepository _cityRepository = cityRepository;
 
     public async Task<Result<IReadOnlyList<CityResponse>>> Handle(GetCitiesByStateIdQuery request, CancellationToken cancellationToken)
     {
-        _repo.DisableTracking();
+        _cityRepository.DisableTracking();
 
-        var cities = await _repo.GetByStateIdAsync(request.StateId, cancellationToken);
+        var cities = await _cityRepository.GetByStateIdAsync(request.StateId, cancellationToken);
 
-        var list = cities.Select(c => new CityResponse(c.Id, c.Name, c.StateId))
-                         .OrderBy(c => c.Name)
-                         .ToList();
-
-        if (list.Count == 0)
+        if (cities.Count == 0)
             return CountryErrors.CitiesNotFound(request.StateId);
 
-        return list;
+        return cities.Select(c => new CityResponse(c.Id, c.Name, c.StateId))
+                         .OrderBy(c => c.Name)
+                         .ToList();
     }
 }

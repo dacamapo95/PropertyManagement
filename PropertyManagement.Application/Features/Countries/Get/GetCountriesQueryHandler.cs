@@ -13,14 +13,12 @@ public sealed class GetCountriesQueryHandler(ICountryRepository repo) : IQueryHa
         _repo.DisableTracking();
         var countries = await _repo.GetAllAsync(cancellationToken);
 
-        var list = countries
-            .Select(c => new CountryResponse(c.Id, c.Name, c.Iso2, c.Iso3, c.PhoneCode, c.CurrencyCode))
-            .OrderBy(c => c.Name)
-            .ToList();
-
-        if (list.Count == 0)
+        if (countries.Count == 0)
             return CountryErrors.CountriesNotFound;
 
-        return list;
+        return countries
+            .Select(c => new CountryResponse(c.Id, c.Name, c.Iso2, c.Iso3, c.PhoneCode, c.CurrencyCode))
+            .OrderBy(c => c.Name)
+            .ToList(); ;
     }
 }

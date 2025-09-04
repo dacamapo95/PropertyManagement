@@ -5,14 +5,14 @@ using PropertyManagement.Shared.Results;
 
 namespace PropertyManagement.Application.Features.Properties.Get;
 
-public sealed class ListPropertiesQueryHandler(IPropertyRepository propertyRepository)
+public sealed class GetPropertiesQueryHandler(IPropertyRepository propertyRepository)
     : IQueryHandler<GetPropertiesQuery, PagedResult<PropertyListItem>>
 {
     private readonly IPropertyRepository _propertyRepository = propertyRepository;
 
     public async Task<Result<PagedResult<PropertyListItem>>> Handle(GetPropertiesQuery request, CancellationToken cancellationToken)
     {
-        var (entities, total) = await _propertyRepository.SearchAsync(
+        var (properties, totalCount) = await _propertyRepository.SearchAsync(
             request.PageNumber,
             request.PageSize,
             request.Search,
@@ -22,7 +22,7 @@ public sealed class ListPropertiesQueryHandler(IPropertyRepository propertyRepos
             request.Desc,
             cancellationToken);
 
-        var items = entities.Select(p => new PropertyListItem(
+        var items = properties.Select(p => new PropertyListItem(
             p.Id,
             p.Name,
             p.Address,
@@ -36,6 +36,6 @@ public sealed class ListPropertiesQueryHandler(IPropertyRepository propertyRepos
             p.OwnerId,
             p.Owner.Name)).ToList();
 
-        return new PagedResult<PropertyListItem>(items, total, request.PageNumber, request.PageSize);
+        return new PagedResult<PropertyListItem>(items, totalCount, request.PageNumber, request.PageSize);
     }
 }
